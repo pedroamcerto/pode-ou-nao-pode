@@ -184,21 +184,19 @@ a{color:var(--azul)}
 .vchip svg{flex:0 0 auto}
 .status{margin:20px 0 0;text-align:center;font-weight:600;font-size:15px;color:var(--papel)}
 .status.ok{color:var(--ouro)}
-.hand-row{margin-top:22px;display:flex;gap:14px;padding:0 4px}
-.hand{flex:1 1 0;min-width:0;height:132px;border:3px solid var(--tinta);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  box-shadow:4px 4px 0 var(--tinta);transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .22s,box-shadow .22s;padding:0 6px}
-.hand .ic{width:46px;height:46px;border-radius:23px;display:flex;align-items:center;justify-content:center}
-.hand .tx{font-weight:800;font-size:clamp(16px,4.9vw,19px);letter-spacing:.16em;white-space:nowrap}
-.hand.p{background:var(--pode);color:var(--tinta);transform:rotate(-3deg)}
+.hand-row{margin-top:22px;display:flex;gap:10px;padding:0 4px}
+.hand{--rot:0deg;flex:1 1 0;min-width:0;height:132px;border:3px solid var(--tinta);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  box-shadow:4px 4px 0 var(--tinta);transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .22s,box-shadow .22s;padding:0 4px;transform:rotate(var(--rot))}
+.hand .ic{width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.hand .tx{font-weight:800;font-size:clamp(14px,4.2vw,17px);letter-spacing:.08em;line-height:1.05;text-align:center;white-space:nowrap}
+.hand.p{--rot:-4deg;background:var(--pode);color:var(--tinta)}
 .hand.p .ic{background:var(--tinta)}
-.hand.n{background:var(--nao);color:var(--papel);transform:rotate(3deg)}
+.hand.d{--rot:0deg;background:var(--ouro);color:var(--tinta)}
+.hand.d .ic{background:var(--tinta)}
+.hand.n{--rot:4deg;background:var(--nao);color:var(--papel)}
 .hand.n .ic{background:var(--papel)}
-.hand.picked{box-shadow:6px 8px 0 var(--tinta)}
-.hand.p.picked{transform:translateY(-14px) rotate(-3deg)}
-.hand.n.picked{transform:translateY(-14px) rotate(3deg)}
-.hand.dim{opacity:.45}
-.hand.p.dim{transform:translateY(8px) scale(.96) rotate(-3deg)}
-.hand.n.dim{transform:translateY(8px) scale(.96) rotate(3deg)}
+.hand.picked{box-shadow:6px 8px 0 var(--tinta);transform:translateY(-14px) rotate(var(--rot))}
+.hand.dim{opacity:.45;transform:translateY(8px) scale(.96) rotate(var(--rot))}
 .vote-actions{margin-top:auto;padding-top:28px}
 .vote-actions .btn{width:100%}
 
@@ -261,6 +259,7 @@ a{color:var(--azul)}
 .track i.on{border-right:2.5px solid var(--tinta)}
 .track .fp{background:var(--pode)}
 .track .fn{background:var(--nao)}
+.track .fd{background:var(--ouro)}
 .grow{animation:aqGrow .6s .5s cubic-bezier(.2,.8,.2,1) both}
 @keyframes aqGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .bars .num{font-weight:800;font-size:20px;text-align:right}
@@ -758,6 +757,7 @@ const I = {
   arrow: `<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F5E52E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`,
   reload: `<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F5E52E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>`,
   book: `<svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1A3CD1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg>`,
+  q16: `<svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#F5E52E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9.2a3 3 0 1 1 4.2 2.8c-.8.4-1.2 1-1.2 1.9v.6M12 18h.01"/></svg>`,
   depends: `<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#F5E52E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9.2a3 3 0 1 1 4.2 2.8c-.8.4-1.2 1-1.2 1.9v.6M12 18h.01"/></svg>`,
   bubble: (c = "#0B1026", s = 16) => `<svg aria-hidden="true" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>`,
   voted: `<svg aria-label="votou" role="img" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="10" fill="#0B1026"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="#F5E52E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -921,7 +921,7 @@ function hostOnData(conn, d) {
 
 function hostVote(id, v) {
   if (H.phase !== "vote") return;
-  if (typeof v !== "boolean") return;
+  if (v !== true && v !== false && v !== "d") return;   // pode | não pode | depende
   if (!H.players.some((p) => p.id === id)) return;
   H.votes.set(id, v);
   hostBroadcast();
@@ -997,12 +997,13 @@ function hostStart() {
 function hostReveal() {
   if (H.phase !== "vote") return;
   const card = DECK[H.order[H.i]];
-  let pode = 0, nao = 0;
+  let pode = 0, nao = 0, dep = 0;
   for (const p of H.players) {
     if (!H.votes.has(p.id)) continue;
-    if (H.votes.get(p.id)) pode++; else nao++;
+    const v = H.votes.get(p.id);
+    if (v === "d") dep++; else if (v) pode++; else nao++;
   }
-  H.reveal = { a: card.a === null ? null : !!card.a, exp: card.exp, ref: card.ref, conversa: card.conversa, pode, nao };
+  H.reveal = { a: card.a === null ? null : !!card.a, exp: card.exp, ref: card.ref, conversa: card.conversa, pode, nao, dep };
   if (card.tag) H.reveal.tag = card.tag;
   H.used.add(H.order[H.i]);
   rememberPlayed(card.q);
@@ -1080,6 +1081,8 @@ function playerLost(conn) {
   else failHome("Não deu pra entrar na sala. Confere o código.", "codigo");
 }
 
+// data-v do botão -> valor do voto: "1" pode, "0" não pode, "d" depende
+function voteValue(dv) { return dv === "1" ? true : dv === "0" ? false : "d"; }
 function castVote(v) {
   const s = ui.s;
   if (!s || s.phase !== "vote") return;
@@ -1336,13 +1339,17 @@ function progress(s) {
 }
 // Uma frase pra puxar o debate, conforme o jeito que a célula votou
 function spark(r) {
-  const tot = r.pode + r.nao;
-  const certos = r.a ? r.pode : r.nao;
+  const dep = r.dep || 0;
+  const tot = r.pode + r.nao + dep;
+  const certos = r.a === null ? dep : r.a ? r.pode : r.nao;
   let msg;
-  if (r.a === null) msg = tot === 0 ? "Essa divide até cristão maduro. Bora ouvir os dois lados?" : "Essa divide até cristão maduro. Cada lado defende seu voto, com a Bíblia na mão!";
-  else if (tot === 0) msg = "Ninguém votou nessa. Bora ouvir o que cada um teria votado?";
-  else if (certos === 0) msg = "A célula inteira votou contra a resposta! Por que será que parece tão certo o outro lado?";
+  if (tot === 0) msg = "Ninguém votou nessa. Bora ouvir o que cada um teria votado?";
+  else if (r.a === null) msg = dep === tot
+    ? "Todo mundo cravou DEPENDE. Mas depende de quê? Cada um diz o seu critério."
+    : "Essa divide até cristão maduro. Quem cravou pode ou não pode, defende seu voto com a Bíblia na mão!";
+  else if (certos === 0) msg = "Ninguém cravou a resposta! Por que será que parece tão certo o outro lado?";
   else if (certos === tot) msg = tot === 1 ? "Na teoria tá fácil. E na prática, alguém tropeça nessa?" : "Unanimidade! Mas na prática, quem aqui vive isso sem tropeçar?";
+  else if (dep * 2 >= tot) msg = "Muita gente ficou no DEPENDE. Depende de quê? Aqui a Bíblia é mais clara do que parecia.";
   else if (certos * 2 < tot) msg = "A maioria foi pro outro lado. Quem votou diferente, defende seu voto!";
   else msg = "Deu divergência! Quem votou diferente da resposta, conta o porquê.";
   return `<div class="spark">${I.bubble("#F5E52E", 20)}<span>${esc(msg)}</span></div>`;
@@ -1463,7 +1470,8 @@ const BUILD = {
       <p class="status" id="status" role="status" aria-live="polite"></p>
       <div class="hand-row" role="group" aria-label="Seu voto">
         <button class="hand p" type="button" data-act="vote" data-v="1" aria-pressed="false"><span class="ic">${I.check("#34C27A")}</span><span class="tx">PODE</span></button>
-        <button class="hand n" type="button" data-act="vote" data-v="0" aria-pressed="false"><span class="ic">${I.x("#C61F32")}</span><span class="tx">NÃO PODE</span></button>
+        <button class="hand d" type="button" data-act="vote" data-v="d" aria-pressed="false"><span class="ic">${I.depends}</span><span class="tx">DEPENDE</span></button>
+        <button class="hand n" type="button" data-act="vote" data-v="0" aria-pressed="false"><span class="ic">${I.x("#C61F32")}</span><span class="tx">NÃO<br>PODE</span></button>
       </div>
       ${ui.isHost ? `<div class="vote-actions"><button class="btn btn-dark" type="button" data-act="reveal">${I.eye}REVELAR</button></div>` : ""}
     </main>`;
@@ -1473,8 +1481,15 @@ const BUILD = {
     const s = ui.s, r = s.reveal;
     const kind = r.a === null ? "d" : r.a ? "p" : "n";
     const label = r.tag ? r.tag.toUpperCase() : ({ p: "PODE", n: "NÃO PODE", d: "DEPENDE" })[kind];
-    const tot = r.pode + r.nao;
-    const pp = tot ? (r.pode / tot) * 100 : 0, pn = tot ? (r.nao / tot) * 100 : 0;
+    const dep = r.dep || 0;
+    const tot = r.pode + r.nao + dep;
+    const pct = (n) => (tot ? (n / tot) * 100 : 0);
+    const bar = (cls, n, label, icon) => {
+      const p = pct(n);
+      return `<span class="bl">${icon}${label}</span>
+              <div class="track" role="img" aria-label="${plural(n, "voto", "votos")} em ${label.toLowerCase()}"><i class="${cls} grow${p > 0 && p < 100 ? " on" : ""}" style="width:${p}%"></i></div>
+              <span class="num">${n}</span>`;
+    };
     const refs = String(r.ref || "").split("·").map((x) => x.trim()).filter(Boolean);
     const last = s.i + 1 >= s.total;
     const actions = ui.isHost
@@ -1504,12 +1519,9 @@ const BUILD = {
           <section class="result" aria-label="Como a célula votou">
             <span class="label">COMO A CÉLULA VOTOU</span>
             <div class="bars">
-              <span class="bl">${I.check("#34C27A", 16)}PODE</span>
-              <div class="track" role="img" aria-label="${plural(r.pode, "voto", "votos")} em pode"><i class="fp grow${pp > 0 && pp < 100 ? " on" : ""}" style="width:${pp}%"></i></div>
-              <span class="num">${r.pode}</span>
-              <span class="bl">${I.x("#FFFFFF", 16)}NÃO PODE</span>
-              <div class="track" role="img" aria-label="${plural(r.nao, "voto", "votos")} em não pode"><i class="fn grow${pn > 0 && pn < 100 ? " on" : ""}" style="width:${pn}%"></i></div>
-              <span class="num">${r.nao}</span>
+              ${bar("fp", r.pode, "PODE", I.check("#34C27A", 16))}
+              ${bar("fd", dep, "DEPENDE", I.q16)}
+              ${bar("fn", r.nao, "NÃO PODE", I.x("#FFFFFF", 16))}
             </div>
             ${spark(r)}
           </section>
@@ -1599,7 +1611,7 @@ const UPDATE = {
     st.textContent = has ? "Voto registrado. Dá pra mudar até revelar." : "Vote! Dá pra mudar até revelar.";
     st.classList.toggle("ok", has);
     for (const b of document.querySelectorAll(".hand")) {
-      const v = b.dataset.v === "1";
+      const v = voteValue(b.dataset.v);
       const on = has && ui.myVote === v;
       b.setAttribute("aria-pressed", String(on));
       b.classList.toggle("picked", on);
@@ -1624,7 +1636,7 @@ app.addEventListener("click", (e) => {
   if (!b || b.disabled) return;
   const act = b.dataset.act;
   if (act === "create") startConnecting("host");
-  else if (act === "vote") castVote(b.dataset.v === "1");
+  else if (act === "vote") castVote(voteValue(b.dataset.v));
   else if (act === "verse") openVerses(Number(b.dataset.k));
   else if (act === "start" && ui.isHost) hostStart();
   else if (act === "size" && ui.isHost) { H.size = Number(b.dataset.n) || 20; updateScreen(); }

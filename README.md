@@ -1,6 +1,6 @@
 # Pode ou Não Pode? — Célula Aquila
 
-Jogo de cartas pra dinâmica de célula. Aparece uma situação do dia a dia, cada pessoa vota no próprio celular se **pode** ou **não pode**, o líder revela a resposta com explicação e versículos, e o grupo conversa.
+Jogo de cartas pra dinâmica de célula. Aparece uma situação do dia a dia, cada pessoa vota no próprio celular se **pode**, **depende** ou **não pode**, o líder revela a resposta com explicação e versículos, e o grupo conversa.
 
 - 3 a 20 pessoas, cada uma no seu celular. O celular do líder é a "sala".
 - Votos anônimos: aparece quem votou, nunca o quê.
