@@ -1,0 +1,1511 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A3CD1">
+<meta name="description" content="Pode ou Não Pode? Situações do dia a dia, voto da galera e o que a Bíblia diz. Célula Aquila.">
+<title>Pode ou Não Pode? — Aquila</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700;800&display=swap">
+<style>
+:root{
+  --azul:#1A3CD1;
+  --azul-noite:#0F2687;
+  --tinta:#0B1026;
+  --papel:#FFFFFF;
+  --ouro:#F5E52E;
+  --pode:#34C27A;
+  --nao:#C61F32;
+  --texto-suave:#DCE3FF;
+  --texto-mudo:#B9C6FF;
+  --cinza-texto:#4A5170;
+  --campo:#F4F6FC;
+  --erro:#B3192B;
+  --ref-bg:#E3E9FF; --ref-fg:#0F2687;
+  --blush:#F4A3B5;
+  --gutter:clamp(16px,5vw,20px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--azul);color:var(--papel);font-family:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
+#app{min-height:100vh;min-height:100dvh;overflow-x:hidden;overflow-x:clip}
+button,input{font-family:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+:focus-visible{outline:3px solid var(--ouro);outline-offset:3px}
+a{color:var(--azul)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- estrutura ---------- */
+.screen{position:relative;max-width:440px;margin:0 auto;min-height:100vh;min-height:100dvh;
+  padding:calc(20px + env(safe-area-inset-top)) var(--gutter) calc(28px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column}
+.screen > :not(.mascot){position:relative;z-index:1}
+.mascot{position:absolute;z-index:0;pointer-events:none;display:block}
+.push{margin-top:auto}
+
+.top{display:flex;align-items:center;justify-content:space-between;height:32px;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--papel)}
+.brand svg{height:18px;width:40px;display:block}
+.brand span{font-weight:800;font-size:13px;letter-spacing:.32em}
+.top-meta{font-weight:600;font-size:11px;letter-spacing:.2em;opacity:.75}
+.top-count{font-weight:800;font-size:13px;letter-spacing:.16em;white-space:nowrap}
+.top-count span{color:var(--texto-mudo)}
+.badge{display:flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:14px;background:var(--ouro);color:var(--tinta);font-weight:800;font-size:11px;letter-spacing:.14em}
+
+.label{font-weight:800;font-size:13px;letter-spacing:.2em}
+.label-sm{font-weight:800;font-size:12px;letter-spacing:.24em;color:var(--texto-suave)}
+.row-between{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.muted{font-weight:600;font-size:14px;color:var(--texto-suave)}
+
+/* ---------- cartas ---------- */
+.card{background:var(--papel);color:var(--tinta);border:3px solid var(--tinta);border-radius:20px;box-shadow:6px 6px 0 var(--tinta)}
+.back{background:var(--azul-noite);border:3px solid var(--tinta);border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--ouro)}
+.back::before{content:"";position:absolute;inset:9px;border:2px solid rgba(245,229,46,.55);border-radius:13px}
+.back svg{width:104px;height:47px;display:block}
+.back b{font-weight:800;font-size:13px;letter-spacing:.16em;text-align:center;line-height:1.15}
+
+/* ---------- botões ---------- */
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 18px;border:3px solid var(--tinta);border-radius:14px;
+  font-weight:800;font-size:16px;letter-spacing:.2em;text-transform:uppercase;transition:transform .12s, box-shadow .12s}
+.btn-dark{background:var(--tinta);color:var(--ouro)}
+.btn-dark:disabled{opacity:.55}
+.btn-sec{background:var(--papel);color:var(--tinta);box-shadow:4px 4px 0 var(--tinta);font-size:15px;letter-spacing:.14em}
+.btn-sec:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--tinta)}
+.btn-dark:not(:disabled):active{transform:translateY(1px)}
+.btn svg{flex:0 0 auto}
+.btn-big{min-height:60px;font-size:17px}
+
+/* ---------- início ---------- */
+.title{margin:34px 0 0;font-weight:800;font-size:68px;line-height:.94;letter-spacing:.05em;display:flex;flex-direction:column}
+.title .ou{color:var(--ouro)}
+.sub{margin:16px 0 0;font-weight:500;font-size:16px;line-height:1.4;max-width:250px;color:var(--texto-suave)}
+.form{margin-top:22px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.form label{font-weight:800;font-size:12px;letter-spacing:.18em}
+.form label + input{margin-bottom:0}
+.form .l2{margin-top:10px}
+.field{height:52px;width:100%;border:2.5px solid var(--tinta);border-radius:12px;padding:0 14px;font-size:17px;font-weight:500;color:var(--tinta);background:var(--campo)}
+.field::placeholder{color:#8A90A8;opacity:1}
+.field:focus-visible{outline:3px solid var(--ouro);outline-offset:1px;border-color:var(--azul)}
+.field.bad{border-color:var(--nao)}
+.code-row{display:flex;gap:10px}
+.code-row .field{width:0;flex:1 1 auto;font-size:22px;font-weight:800;letter-spacing:.4em;text-transform:uppercase}
+.code-row .field::placeholder{letter-spacing:.4em;font-weight:700}
+.code-row .btn{min-height:52px;height:52px;border-radius:12px;font-size:15px;letter-spacing:.16em;padding:0 20px}
+.err{display:flex;align-items:center;gap:8px;color:var(--erro);font-weight:600;font-size:14px;line-height:1.3}
+.err:empty{display:none}
+.err svg{flex:0 0 auto}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0 14px;color:var(--texto-suave);font-weight:600;font-size:12px;letter-spacing:.2em}
+.divider i{flex:1 1 auto;height:2px;background:rgba(255,255,255,.28)}
+
+/* ---------- mini cartas do código ---------- */
+.code{display:flex;gap:8px}
+.code span{width:54px;height:66px;background:var(--papel);color:var(--tinta);border:3px solid var(--tinta);border-radius:10px;box-shadow:3px 3px 0 var(--tinta);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:32px}
+.code.tilt span:nth-child(1){transform:rotate(-3deg)}
+.code.tilt span:nth-child(2){transform:rotate(2deg)}
+.code.tilt span:nth-child(3){transform:rotate(-1deg)}
+.code.tilt span:nth-child(4){transform:rotate(3deg)}
+.code.sm span{height:64px;font-size:30px}
+.code-xs{display:flex;align-items:center;gap:8px;font-weight:600;font-size:12px;letter-spacing:.16em;color:var(--texto-suave)}
+.code-xs .code{gap:3px}
+.code-xs .code span{width:20px;height:24px;border-width:2px;border-radius:5px;box-shadow:none;font-size:13px}
+
+/* ---------- conectando ---------- */
+.center{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;perspective:900px}
+.spin-wrap{position:relative;width:170px;height:236px}
+.spin-wrap .under{position:absolute;inset:0;background:var(--papel);border:3px solid var(--tinta);border-radius:20px;transform:rotate(8deg) translate(14px,6px);opacity:.9}
+.spin-wrap .back{position:absolute;inset:0;box-shadow:6px 6px 0 var(--tinta)}
+.spin{animation:aqFlip 2.4s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes aqFlip{0%{transform:rotateY(0deg) rotate(-4deg)}50%{transform:rotateY(180deg) rotate(4deg)}100%{transform:rotateY(360deg) rotate(-4deg)}}
+.big-label{font-weight:800;font-size:22px;letter-spacing:.12em;text-align:center}
+.dots{display:flex;align-items:center;gap:6px;font-weight:500;font-size:15px;color:var(--texto-suave)}
+.dots i{width:6px;height:6px;border-radius:3px;background:var(--ouro);animation:aqDot 1.2s infinite}
+.dots i:nth-of-type(2){animation-delay:.2s}
+.dots i:nth-of-type(3){animation-delay:.4s}
+@keyframes aqDot{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.foot{text-align:center;font-weight:500;font-size:13px;color:var(--texto-mudo);padding-bottom:8px}
+
+/* ---------- lobby ---------- */
+.code-block{margin-top:20px;display:flex;align-items:flex-end;justify-content:space-between}
+.code-block > div{display:flex;flex-direction:column;gap:10px}
+.qr-card{margin-top:22px;padding:16px;display:flex;align-items:center;gap:16px}
+.qr{width:132px;height:132px;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+.qr img,.qr canvas{width:132px!important;height:132px!important;display:block;image-rendering:pixelated}
+.qr-txt{display:flex;flex-direction:column;gap:8px;min-width:0}
+.qr-txt b{font-weight:800;font-size:13px;letter-spacing:.16em}
+.qr-txt span{font-weight:500;font-size:14px;line-height:1.35;color:var(--cinza-texto)}
+.qr-txt a{font-weight:700;font-size:14px;line-height:1.3;word-break:break-all;color:var(--azul)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.seg{margin-top:10px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.seg button{min-height:48px;border:2.5px solid var(--tinta);border-radius:12px;background:var(--azul-noite);color:var(--texto-suave);font-weight:800;font-size:15px;letter-spacing:.08em;transition:transform .12s;padding:0 2px}
+@media (max-width:399px){ .seg{gap:6px} .seg button{font-size:13px;letter-spacing:.02em;padding:0} }
+.seg button[aria-pressed="true"]{background:var(--ouro);color:var(--tinta);box-shadow:3px 3px 0 var(--tinta);transform:translate(-1px,-1px)}
+.chip{display:flex;align-items:center;gap:6px;height:38px;padding:0 14px;border:2.5px solid var(--tinta);border-radius:19px;background:var(--papel);color:var(--tinta);font-weight:600;font-size:15px;max-width:100%}
+.chip .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip.host{font-weight:700}
+.chip.me{background:var(--ouro);font-weight:700}
+.chip svg{flex:0 0 auto}
+.tip{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:14px;background:var(--azul-noite);color:var(--texto-suave);font-weight:500;font-size:14px;line-height:1.35}
+.tip svg{flex:0 0 auto;margin-top:1px}
+.hint{margin:0;text-align:center;font-weight:500;font-size:14px;color:var(--texto-mudo);line-height:1.35}
+.stack3{position:relative;width:210px;height:290px}
+.stack3 .back{position:absolute;inset:0;border-radius:22px}
+.stack3 .back::before{inset:10px;border-radius:14px}
+.stack3 .b1{transform:rotate(-9deg) translate(-18px,8px)}
+.stack3 .b2{transform:rotate(6deg) translate(16px,4px)}
+.stack3 .b3{box-shadow:6px 6px 0 var(--tinta);gap:16px}
+.stack3 .b3 svg{width:128px;height:58px}
+.stack3 .b3 b{font-size:16px}
+
+/* ---------- votação ---------- */
+.progress{margin-top:12px;height:6px;border-radius:3px;background:rgba(255,255,255,.22);overflow:hidden}
+.progress i{display:block;height:6px;background:var(--ouro);transition:width .4s}
+.deck{margin-top:26px;position:relative;padding:0 8px 8px}
+.deck .s1,.deck .s2{position:absolute;left:14px;right:14px;border:3px solid var(--tinta);border-radius:20px}
+.deck .s1{top:6px;bottom:0;background:var(--azul-noite);transform:rotate(-5deg)}
+.deck .s2{top:2px;bottom:4px;background:var(--papel);transform:rotate(3.5deg)}
+.qcard{position:relative;min-height:288px;padding:20px 22px 84px;display:flex;flex-direction:column;transform:rotate(-1.5deg)}
+.qcard .qhead{display:flex;align-items:center;justify-content:space-between}
+.qnum{font-weight:800;font-size:12px;letter-spacing:.24em;color:var(--azul)}
+.qcard .ink{height:14px;width:31px;color:var(--tinta);opacity:.85;display:block}
+.qtext{margin:22px 0 0;font-weight:700;font-size:clamp(22px,6.6vw,27px);line-height:1.18;letter-spacing:-.005em}
+.qcard .mascot{right:10px;bottom:8px;width:74px;height:74px;transform:rotate(-8deg)}
+.deal{animation:aqDeal .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes aqDeal{0%{transform:translate(160px,-260px) rotate(24deg);opacity:0}70%{opacity:1}100%{transform:translate(0,0) rotate(-1.5deg);opacity:1}}
+.votes{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.votes .note{font-weight:500;font-size:13px;color:var(--texto-mudo)}
+.vchip{display:flex;align-items:center;gap:5px;height:32px;padding:0 11px 0 7px;border:2px solid var(--tinta);border-radius:16px;background:var(--papel);color:var(--tinta);font-weight:600;font-size:14px;max-width:100%}
+.vchip.wait{border:2px dashed rgba(255,255,255,.6);background:transparent;color:var(--texto-suave)}
+.vchip.me{background:var(--ouro)}
+.vchip.wait.me{background:transparent;border-color:var(--ouro);color:var(--ouro)}
+.vchip .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vchip svg{flex:0 0 auto}
+.status{margin:20px 0 0;text-align:center;font-weight:600;font-size:15px;color:var(--papel)}
+.status.ok{color:var(--ouro)}
+.hand-row{margin-top:22px;display:flex;gap:14px;padding:0 4px}
+.hand{flex:1 1 0;min-width:0;height:132px;border:3px solid var(--tinta);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  box-shadow:4px 4px 0 var(--tinta);transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .22s,box-shadow .22s;padding:0 6px}
+.hand .ic{width:46px;height:46px;border-radius:23px;display:flex;align-items:center;justify-content:center}
+.hand .tx{font-weight:800;font-size:clamp(16px,4.9vw,19px);letter-spacing:.16em;white-space:nowrap}
+.hand.p{background:var(--pode);color:var(--tinta);transform:rotate(-3deg)}
+.hand.p .ic{background:var(--tinta)}
+.hand.n{background:var(--nao);color:var(--papel);transform:rotate(3deg)}
+.hand.n .ic{background:var(--papel)}
+.hand.picked{box-shadow:6px 8px 0 var(--tinta)}
+.hand.p.picked{transform:translateY(-14px) rotate(-3deg)}
+.hand.n.picked{transform:translateY(-14px) rotate(3deg)}
+.hand.dim{opacity:.45}
+.hand.p.dim{transform:translateY(8px) scale(.96) rotate(-3deg)}
+.hand.n.dim{transform:translateY(8px) scale(.96) rotate(3deg)}
+.vote-actions{margin-top:auto;padding-top:28px}
+
+/* ---------- revelação ---------- */
+.reveal-grid{display:flex;flex-direction:column}
+.rcard{margin-top:24px;overflow:hidden;display:flex;flex-direction:column}
+.flip{animation:aqReveal .7s cubic-bezier(.3,.7,.2,1) both;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+@keyframes aqReveal{0%{transform:perspective(1100px) rotateY(180deg)}100%{transform:perspective(1100px) rotateY(0deg)}}
+.banner{border-bottom:3px solid var(--tinta);padding:16px 20px;display:flex;align-items:center;gap:12px}
+.banner.n{background:var(--nao);color:var(--papel)}
+.banner.p{background:var(--pode);color:var(--tinta)}
+.banner .ic{width:40px;height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.banner.n .ic{background:var(--papel)}
+.banner.p .ic{background:var(--tinta)}
+.banner.d{background:var(--ouro);color:var(--tinta)}
+.banner.d .ic{background:var(--tinta)}
+.banner b{font-weight:800;font-size:30px;letter-spacing:.12em;line-height:1}
+.banner b.long{font-size:clamp(20px,6vw,26px);letter-spacing:.08em;line-height:1.05}
+.rbody{padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px}
+.rq{display:flex;flex-direction:column;gap:6px}
+.rq .qnum{font-size:11px}
+.rq span:last-child{font-weight:600;font-size:16px;line-height:1.3;color:var(--cinza-texto)}
+.exp{margin:0;font-weight:500;font-size:17px;line-height:1.45}
+.refs{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.refs button,.vtabs button{min-height:36px;display:flex;align-items:center;gap:6px;padding:0 12px;border:2px solid transparent;border-radius:18px;background:var(--ref-bg);color:var(--ref-fg);font-weight:700;font-size:14px;white-space:nowrap}
+.refs button:hover{border-color:var(--ref-fg)}
+.refs button svg{opacity:.7}
+.refs-hint{margin:-6px 0 0;font-weight:500;font-size:13px;color:var(--cinza-texto)}
+
+/* ---------- painel de versículos ---------- */
+.sheet{padding:0;border:3px solid var(--tinta);border-bottom:0;border-radius:20px 20px 0 0;background:var(--papel);color:var(--tinta);
+  width:100%;max-width:440px;max-height:82vh;max-height:82dvh;margin:auto auto 0;box-shadow:0 -6px 0 rgba(11,16,38,.25)}
+.sheet[open]{display:flex;flex-direction:column;overflow:hidden;animation:aqSheet .28s cubic-bezier(.2,.8,.2,1)}
+.sheet::backdrop{background:rgba(11,16,38,.6)}
+@keyframes aqSheet{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet-head{padding:10px 18px 12px;border-bottom:2.5px solid var(--tinta);display:flex;flex-direction:column;gap:10px}
+.sheet-grip{align-self:center;width:44px;height:5px;border-radius:3px;background:#C9CEDF}
+.sheet-title{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sheet-title h2{margin:0;font-weight:800;font-size:20px;letter-spacing:.06em}
+.sheet-close{width:44px;height:44px;flex:0 0 auto;border:2.5px solid var(--tinta);border-radius:22px;background:var(--papel);display:flex;align-items:center;justify-content:center}
+.vtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -18px;padding:0 18px 2px}
+.vtabs button[aria-selected="true"]{background:var(--tinta);color:var(--ouro)}
+.sheet-body{padding:16px 20px;overflow-y:auto;flex:1 1 auto;min-height:0;-webkit-overflow-scrolling:touch}
+.sheet-body p{margin:0 0 12px;font-weight:500;font-size:18px;line-height:1.5}
+.sheet-body sup{font-weight:800;font-size:12px;color:var(--azul);margin-right:4px}
+.sheet-body .msg{color:var(--cinza-texto);font-size:16px}
+.sheet-foot{padding:12px 18px calc(14px + env(safe-area-inset-bottom));border-top:2px solid #E3E6F0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sheet-foot small{font-weight:500;font-size:12px;line-height:1.3;color:var(--cinza-texto)}
+.sheet-foot a{flex:0 0 auto;min-height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;border:2.5px solid var(--tinta);border-radius:12px;background:var(--papel);color:var(--tinta);box-shadow:3px 3px 0 var(--tinta);font-weight:800;font-size:13px;letter-spacing:.12em;text-decoration:none}
+@media (min-width:600px){ .sheet{margin:auto;border-bottom:3px solid var(--tinta);border-radius:20px;box-shadow:6px 6px 0 var(--tinta)} .sheet-grip{display:none} }
+@media (prefers-reduced-motion: reduce){ .sheet[open]{animation:none} }
+.talk{margin-top:4px;background:var(--ouro);border:2.5px solid var(--tinta);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.talk b{display:flex;align-items:center;gap:8px;font-weight:800;font-size:12px;letter-spacing:.22em}
+.talk span{font-weight:600;font-size:16px;line-height:1.35}
+.result{margin-top:28px;display:flex;flex-direction:column;gap:12px}
+.bars{display:grid;grid-template-columns:104px minmax(0,1fr) 28px;align-items:center;gap:10px}
+.bars .bl{display:flex;align-items:center;gap:6px;font-weight:800;font-size:13px;letter-spacing:.12em;white-space:nowrap}
+.track{height:28px;border:2.5px solid var(--tinta);border-radius:8px;background:var(--papel);overflow:hidden}
+.track i{display:block;height:100%;transform-origin:left center}
+.track i.on{border-right:2.5px solid var(--tinta)}
+.track .fp{background:var(--pode)}
+.track .fn{background:var(--nao)}
+.grow{animation:aqGrow .6s .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes aqGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bars .num{font-weight:800;font-size:20px;text-align:right}
+.spark{display:flex;align-items:flex-start;gap:10px;margin-top:4px;padding:12px 14px;border-radius:14px;border:2.5px dashed rgba(245,229,46,.7);color:var(--papel);font-weight:600;font-size:15px;line-height:1.35}
+.spark svg{flex:0 0 auto;margin-top:1px}
+.reveal-actions{margin-top:28px;display:flex;flex-direction:column;gap:12px}
+.talk-now{margin-top:24px;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:var(--azul-noite);color:var(--texto-suave);font-weight:600;font-size:16px;line-height:1.35}
+.talk-now svg{flex:0 0 auto}
+
+/* ---------- fim ---------- */
+.end-wrap{margin-top:52px;position:relative;padding:0 10px}
+.end-wrap .s1,.end-wrap .s2{position:absolute;left:22px;right:22px;border:3px solid var(--tinta);border-radius:22px}
+.end-wrap .s1{top:10px;bottom:-6px;background:var(--azul-noite);transform:rotate(-6deg)}
+.end-wrap .s2{top:6px;bottom:-2px;background:var(--ouro);transform:rotate(4deg)}
+.end-card{position:relative;border-radius:22px;padding:24px 24px 28px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
+.end-card .pet{width:128px;height:128px;display:block}
+.end-card h1{margin:0;font-weight:800;font-size:40px;line-height:1;letter-spacing:.06em}
+.end-card .bar{display:block;width:48px;height:5px;background:var(--azul)}
+.end-card .pray{margin:0;font-weight:600;font-size:20px;line-height:1.3}
+.end-card .sum{margin:0;font-weight:500;font-size:15px;line-height:1.4;color:var(--cinza-texto);max-width:250px}
+.end-actions{margin-top:auto;padding-top:32px;display:flex;flex-direction:column;gap:12px}
+
+/* ---------- telas largas (notebook / TV) ---------- */
+@media (min-width:900px){
+  .screen.wide{max-width:960px}
+  .screen.wide .reveal-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:44px;align-items:start}
+  .screen.wide .side{position:sticky;top:24px}
+  .screen.wide .result{margin-top:24px}
+}
+@media (max-width:379px){
+  .opt{display:none}
+  .title{font-size:62px}
+  .bars{grid-template-columns:96px minmax(0,1fr) 26px;gap:8px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .spin,.dots i,.deal,.flip,.grow{animation:none!important}
+  .hand,.btn,.progress i{transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- Arte inline: águia da Aquila + bichinhos -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="eagle" viewBox="0 0 1407 633"><path fill="currentColor" fill-rule="evenodd" d="M709.1 625.2C711.6 621.0 715.8 612.3 718.4 606.0C721.1 599.7 723.6 594.1 724.1 593.5C724.7 592.9 727.6 595.1 731.8 599.1C741.6 608.7 745.9 611.6 756.5 616.0C759.7 617.3 773.8 622.0 774.5 622.0C775.7 622.0 774.8 618.8 772.0 612.7C768.4 604.8 768.4 604.0 771.0 604.0C772.8 604.0 773.0 603.6 772.5 600.7C771.9 597.8 772.3 596.9 775.6 593.7C777.7 591.7 780.3 590.0 781.3 590.0C782.2 590.0 785.9 591.2 789.3 592.6C798.7 596.7 808.1 600.0 810.0 600.0C810.9 600.0 812.5 600.9 813.5 602.0C815.0 603.7 815.1 604.4 814.1 606.6C812.9 609.4 812.9 609.6 819.2 616.2C821.7 618.8 821.5 619.4 816.8 623.4C813.4 626.2 812.8 627.0 814.2 627.5C817.4 628.8 823.4 626.2 826.0 622.4C827.3 620.4 830.9 616.2 833.8 613.2C838.2 608.7 839.6 607.9 840.9 608.7C843.4 610.2 843.5 615.3 841.0 617.5C838.4 619.9 838.5 621.0 841.3 621.0C844.1 621.0 847.1 618.0 849.7 612.5C855.3 600.9 856.6 598.7 857.5 598.6C859.2 598.4 859.2 604.6 857.6 606.0C855.5 607.7 855.6 609.0 857.8 609.0C862.5 609.0 865.4 602.3 866.5 588.4L867.2 580.3L859.9 573.9C848.6 563.9 843.7 558.7 841.2 553.9C840.0 551.5 838.5 548.8 838.0 548.0C837.5 547.2 833.7 541.0 829.6 534.2C819.4 517.7 819.5 515.0 830.0 521.3C840.9 527.8 849.8 530.5 863.3 531.5C871.0 532.0 872.1 531.9 872.7 530.4C873.1 529.2 872.6 528.2 870.9 527.1C863.3 522.4 830.5 485.3 811.9 460.5C789.4 430.5 781.9 408.5 784.9 381.2C785.5 375.5 786.0 368.7 786.0 366.0C786.0 363.4 786.3 360.5 786.6 359.6C788.1 355.8 792.0 359.3 792.0 364.3C792.0 370.6 803.8 398.9 809.6 406.6C814.4 412.8 814.9 411.7 815.2 393.8C815.4 382.0 815.8 377.6 816.7 377.2C817.4 377.0 818.3 377.7 818.6 378.7C819.5 381.1 825.7 394.0 827.3 396.5C830.1 401.0 836.6 409.6 839.8 413.2C844.3 418.2 846.4 418.3 845.6 413.2C842.9 395.5 842.0 379.5 843.6 379.5C844.3 379.5 848.6 383.8 853.2 389.0C865.3 402.5 878.6 413.0 883.6 413.0C885.5 413.0 885.4 412.9 882.1 406.3C878.1 398.3 876.7 394.3 877.5 393.1C878.5 391.3 879.6 391.8 884.4 395.9C886.8 398.0 891.4 401.3 894.5 403.1C897.7 405.0 901.6 407.3 903.2 408.3C905.9 409.9 911.3 412.1 916.2 413.7C919.0 414.5 918.4 412.6 913.6 405.7C907.8 397.3 897.0 378.3 897.0 376.6C897.0 374.6 901.6 376.8 908.5 382.1C912.9 385.4 920.3 390.0 925.0 392.4C929.7 394.8 934.5 397.2 935.5 397.8C939.7 400.0 944.9 402.0 946.6 402.0C947.6 402.0 950.3 402.7 952.7 403.6C955.0 404.5 957.7 405.0 958.6 404.6C960.0 404.1 959.4 403.0 955.3 398.7C948.2 391.1 934.0 371.5 934.0 369.2C934.0 367.3 936.5 367.8 938.6 370.1C940.6 372.3 946.0 376.1 952.0 379.3C953.9 380.4 957.5 382.3 959.9 383.7C967.0 387.6 980.1 392.7 984.6 393.3C991.8 394.2 992.0 392.8 985.4 385.8C979.2 379.0 963.0 356.9 963.0 355.1C963.0 353.0 965.7 354.0 972.4 358.4C984.4 366.3 1002.9 374.3 1012.0 375.5C1014.5 375.8 1017.7 376.3 1019.2 376.6C1023.5 377.4 1022.7 375.5 1015.7 368.1C1004.9 356.7 987.0 333.6 987.0 331.1C987.0 329.3 989.0 329.9 992.9 332.8C994.9 334.3 998.3 336.5 1000.5 337.7C1002.7 338.8 1006.3 340.8 1008.4 342.0C1014.5 345.3 1028.7 351.0 1031.0 351.0C1032.2 351.0 1034.4 351.6 1035.8 352.4C1041.8 355.5 1064.2 359.2 1065.3 357.2C1065.7 356.7 1061.0 351.4 1055.0 345.4C1048.9 339.5 1044.0 334.2 1044.0 333.8C1044.0 332.0 1051.4 333.5 1059.5 337.1C1069.3 341.3 1087.3 345.0 1098.8 345.0C1103.8 345.0 1108.0 344.6 1108.0 344.1C1108.0 343.7 1105.4 341.5 1102.1 339.4C1095.6 335.1 1082.0 323.2 1082.0 321.9C1082.0 320.5 1084.5 320.8 1090.8 322.9C1101.7 326.6 1112.0 329.0 1123.3 330.5C1145.1 333.4 1146.4 332.5 1134.0 323.4C1124.5 316.5 1115.0 308.0 1115.0 306.4C1115.0 304.5 1117.6 304.7 1121.9 306.9C1126.7 309.4 1142.6 314.4 1152.0 316.3C1160.2 318.1 1180.8 319.1 1181.6 317.9C1181.8 317.5 1177.5 313.7 1171.9 309.6C1166.4 305.5 1161.1 301.2 1160.3 300.1C1159.0 298.2 1159.1 297.9 1160.6 297.3C1161.5 297.0 1163.0 297.1 1163.9 297.7C1164.8 298.2 1169.1 299.7 1173.5 301.0C1177.9 302.2 1182.8 303.6 1184.5 304.2C1196.0 307.8 1221.6 309.4 1223.9 306.6C1224.9 305.4 1224.6 304.8 1222.3 303.4C1205.0 292.7 1189.5 281.5 1189.5 279.7C1189.5 278.2 1196.0 278.6 1202.0 280.5C1216.1 285.0 1249.5 288.4 1263.5 286.8C1285.0 284.3 1288.7 282.0 1277.8 277.9C1274.3 276.6 1269.5 274.5 1267.0 273.2C1258.4 268.6 1253.5 265.9 1250.5 264.0C1248.8 263.0 1246.4 261.5 1245.0 260.7C1243.6 260.0 1238.7 257.2 1234.0 254.6C1223.6 248.8 1221.9 247.4 1224.5 246.4C1225.5 246.0 1227.1 246.2 1228.2 246.9C1229.3 247.6 1234.8 248.9 1240.3 249.8C1255.1 252.3 1302.2 252.2 1313.2 249.8C1324.4 247.2 1331.5 245.3 1333.6 244.3C1334.7 243.7 1336.8 242.7 1338.5 241.9C1341.8 240.3 1343.2 237.0 1340.6 237.0C1338.1 237.0 1300.3 224.7 1286.5 219.3C1273.5 214.3 1271.3 213.5 1262.8 210.1C1258.6 208.4 1254.5 207.0 1253.7 207.0C1252.9 207.0 1251.7 206.4 1251.1 205.6C1248.8 202.8 1252.0 202.2 1262.0 203.6C1267.2 204.3 1274.9 204.9 1279.0 204.9C1286.9 204.9 1308.4 202.8 1318.5 201.1C1321.8 200.5 1327.2 199.5 1330.5 199.0C1336.7 197.9 1339.2 197.2 1354.5 192.1C1369.7 187.0 1374.1 185.3 1375.3 184.1C1375.9 183.5 1376.8 183.0 1377.3 183.0C1378.8 183.0 1386.0 176.7 1386.0 175.4C1386.0 174.6 1383.5 174.0 1378.2 173.6C1367.4 172.9 1355.2 171.4 1350.5 170.2C1348.3 169.6 1343.3 168.8 1339.5 168.4C1335.7 168.1 1331.4 167.3 1330.1 166.9C1327.6 165.9 1312.2 163.2 1302.7 162.1C1292.9 160.9 1290.8 156.0 1300.2 156.0C1311.1 156.0 1346.6 144.5 1369.0 133.7C1380.2 128.3 1395.0 118.7 1400.8 113.0C1404.2 109.6 1407.0 106.4 1407.0 105.8C1407.0 105.1 1405.5 105.0 1402.8 105.4C1396.0 106.5 1338.7 107.9 1301.6 108.0C1263.7 108.0 1249.6 106.9 1209.5 100.5C1204.5 99.7 1196.0 98.4 1190.5 97.5C1185.0 96.6 1176.5 95.3 1171.5 94.5C1123.8 87.0 1121.0 86.8 1094.9 87.3C1071.7 87.8 1065.7 88.5 1051.0 92.8C1042.7 95.3 1033.3 99.3 1024.9 104.2C1019.0 107.6 1000.4 120.5 997.0 123.5C994.1 126.1 959.5 151.9 956.5 153.7C955.4 154.4 951.4 156.8 947.5 159.1C925.2 172.7 898.0 184.0 872.5 190.3C860.2 193.3 832.5 193.5 824.0 190.6C804.9 184.2 793.9 173.2 775.3 142.0C767.3 128.5 766.4 126.6 763.9 118.0C761.6 110.0 761.5 103.4 763.7 95.6C767.3 82.3 774.9 74.2 787.0 70.6C799.4 66.9 813.0 70.7 816.1 78.8C817.5 82.4 818.8 81.4 820.1 75.4C822.5 64.8 818.6 53.3 809.6 44.5C804.0 39.1 787.1 30.0 782.5 30.0C781.7 30.0 777.3 26.2 772.7 21.6C763.8 12.4 756.3 7.9 744.0 4.5C734.6 1.8 713.7 1.8 705.5 4.5C686.9 10.4 667.9 29.8 656.9 54.0C655.8 56.5 654.2 59.8 653.5 61.5C647.0 75.8 641.6 94.8 637.5 118.0C632.0 149.2 628.8 158.9 620.0 170.6C611.1 182.4 598.6 189.5 581.5 192.6C571.4 194.4 563.2 194.4 550.0 192.5C540.1 191.1 536.4 190.3 522.9 186.7C510.0 183.2 490.9 174.5 474.5 164.6C462.9 157.6 450.8 149.4 429.3 133.9C414.1 123.0 398.7 113.0 388.5 107.5C384.6 105.4 381.1 103.4 380.5 103.0C379.2 102.1 365.4 96.5 361.0 95.0C334.2 86.1 306.0 85.2 259.5 91.6C238.5 94.5 213.2 98.4 202.0 100.5C194.5 101.9 185.9 103.4 165.5 106.7C143.6 110.3 34.7 108.0 6.8 103.4C1.0 102.5 1.9 104.8 10.1 112.4C18.5 120.1 28.6 126.5 46.0 134.8C64.5 143.7 71.4 146.3 88.5 151.0C92.9 152.2 98.1 153.8 100.2 154.6C102.2 155.3 106.1 156.2 109.0 156.6C114.1 157.3 116.6 159.4 114.0 161.0C113.4 161.4 110.2 162.0 107.1 162.4C104.0 162.8 99.9 163.5 98.0 164.0C94.1 165.0 82.2 167.0 61.5 170.0C53.8 171.1 45.3 172.5 42.7 173.0C40.0 173.6 35.0 174.0 31.4 174.0C27.9 174.0 25.0 174.4 25.0 174.8C25.0 177.3 35.1 183.7 47.0 188.7C55.9 192.5 58.9 193.4 82.5 199.4C85.8 200.2 93.2 201.4 99.0 202.0C104.8 202.5 112.2 203.5 115.5 204.0C126.2 205.8 153.4 204.5 162.9 201.9C165.8 201.1 164.8 203.6 161.8 204.9C155.6 207.5 151.5 209.1 149.0 210.0C147.6 210.5 144.0 211.8 141.0 213.0C138.0 214.2 132.6 216.2 129.0 217.5C125.4 218.8 120.0 220.9 117.0 222.0C114.0 223.2 108.3 225.2 104.5 226.4C100.7 227.7 96.4 229.2 95.0 229.8C90.5 231.6 72.5 237.0 70.8 237.0C68.2 237.0 67.6 239.0 69.6 240.5C72.0 242.2 78.1 244.2 89.0 246.8C93.7 248.0 99.5 249.4 102.0 250.0C104.5 250.7 117.7 251.4 132.1 251.7C153.0 252.1 159.6 251.9 168.6 250.5C174.6 249.6 180.5 248.2 181.7 247.4C184.2 245.8 187.6 245.6 188.5 246.9C188.8 247.5 184.2 250.7 178.3 254.2C172.4 257.7 166.8 260.9 165.8 261.5C156.3 267.2 132.5 279.0 130.7 279.0C129.8 279.0 128.8 279.5 128.4 280.1C127.2 282.1 130.7 284.2 137.1 285.2C147.5 286.8 172.7 287.3 182.5 286.0C194.0 284.6 209.4 281.4 214.3 279.5C219.6 277.4 222.0 277.6 222.0 280.0C222.0 281.1 221.6 282.0 221.1 282.0C220.6 282.0 215.7 285.3 210.3 289.3C198.9 297.8 190.8 303.0 189.2 303.0C188.6 303.0 187.6 303.9 187.0 305.0C186.1 306.6 186.2 307.2 187.5 307.6C189.5 308.4 213.6 307.4 221.5 306.2C227.6 305.3 245.7 299.5 247.4 297.9C248.7 296.7 253.0 296.8 253.0 297.9C253.0 299.2 240.5 309.7 234.7 313.3C232.1 314.9 230.1 316.7 230.3 317.4C230.6 318.1 234.3 318.4 241.9 318.3C253.7 318.1 265.7 315.9 276.0 311.9C279.0 310.8 282.6 309.5 284.0 309.1C285.4 308.6 288.6 307.2 291.2 305.9C299.9 301.7 298.8 306.3 289.5 313.5C273.6 325.7 269.5 329.1 269.5 330.2C269.5 332.0 279.0 332.4 286.5 331.0C299.9 328.6 321.1 323.3 322.4 322.0C323.6 320.8 329.0 320.7 329.0 321.9C329.0 323.2 314.2 336.8 309.8 339.7C307.7 341.0 306.0 342.8 306.0 343.7C306.0 345.1 307.1 345.2 315.3 344.6C324.5 344.0 337.7 341.8 343.5 340.0C345.1 339.5 349.8 338.1 353.7 336.9C357.7 335.8 361.2 334.4 361.5 333.9C362.4 332.5 367.0 332.8 367.0 334.3C367.0 336.5 358.0 345.9 351.4 350.6C347.9 353.1 345.0 355.6 345.0 356.1C345.0 357.5 357.7 357.1 364.9 355.5C374.3 353.3 381.9 351.1 386.5 349.3C390.3 347.9 409.2 338.6 412.8 336.5C413.8 335.9 416.6 334.3 419.2 332.7C424.4 329.7 425.4 329.4 424.7 331.3C423.7 334.0 401.5 362.8 396.4 368.0C393.4 371.1 391.0 374.4 391.0 375.4C391.0 377.0 391.5 377.2 395.0 376.6C405.4 375.0 434.2 362.7 442.7 356.4C449.5 351.3 449.8 354.4 443.3 363.8C437.9 371.7 430.0 381.9 425.2 387.4C420.5 392.8 421.9 393.8 431.2 391.5C437.7 390.0 442.3 388.3 447.1 386.0C450.7 384.2 458.7 379.7 461.5 377.9C463.1 376.9 465.2 375.7 466.0 375.3C466.8 375.0 469.1 373.4 471.1 371.8C474.8 369.0 478.0 368.1 478.0 370.0C478.0 371.2 460.2 394.9 455.7 399.7C454.1 401.4 453.1 403.3 453.5 403.9C454.3 405.3 459.9 404.4 466.0 401.8C468.5 400.7 473.1 399.0 476.4 397.9C479.6 396.8 483.2 395.3 484.4 394.6C494.4 388.3 504.2 381.7 507.8 378.6C511.7 375.4 515.0 374.0 515.0 375.5C515.0 377.6 500.3 402.9 495.3 409.7C492.5 413.3 493.3 414.4 497.5 412.6C499.2 411.8 502.5 410.4 505.0 409.4C511.7 406.7 522.7 400.0 527.5 395.8C531.5 392.3 535.0 390.9 535.0 392.8C535.0 394.2 529.9 406.4 528.9 407.4C527.7 408.7 527.7 413.0 528.9 413.0C531.2 413.0 542.0 406.4 546.6 402.2C552.5 396.7 559.7 388.2 563.4 382.2C564.8 379.9 566.5 378.0 567.1 378.0C568.2 378.0 568.0 387.0 566.4 407.6C565.6 417.8 566.8 419.0 571.9 413.3C580.1 404.1 588.9 389.6 591.0 382.1C592.3 377.4 594.6 376.7 595.7 380.8C596.1 382.3 596.5 389.5 596.5 396.7C596.5 406.1 596.8 410.0 597.7 410.0C601.3 410.0 618.0 378.7 618.0 371.7C618.0 369.8 621.4 362.0 622.2 362.0C623.2 362.0 623.2 367.5 622.0 393.0C620.6 424.5 618.5 429.0 586.1 469.5C567.4 492.9 557.2 504.6 543.6 517.8C537.2 524.1 532.0 529.5 532.0 530.0C532.0 531.3 540.5 532.1 547.2 531.5C556.7 530.5 572.7 524.6 578.9 519.8C581.6 517.8 584.0 517.4 584.0 519.2C584.0 520.1 580.0 527.2 573.7 537.5C569.9 543.7 567.4 547.7 566.5 549.2C557.8 563.7 556.6 565.3 551.5 568.6C545.8 572.2 539.4 579.6 538.3 583.8C538.0 585.1 538.3 587.3 538.9 588.6C539.5 590.0 540.0 592.9 540.0 595.1C540.0 599.5 542.6 605.5 545.9 608.4C548.7 610.9 549.7 609.7 548.1 605.7C545.9 600.5 546.1 597.6 548.8 597.2C550.4 596.9 551.0 597.4 551.0 598.7C551.0 599.7 551.9 602.3 553.0 604.5C554.1 606.6 555.5 609.9 556.1 611.8C557.3 615.4 563.5 622.0 565.8 622.0C566.4 622.0 567.0 621.1 567.0 620.0C567.0 618.9 566.5 618.0 566.0 618.0C564.3 618.0 562.7 613.4 563.4 610.6C563.7 609.2 564.5 608.0 565.0 608.0C566.3 608.0 579.9 621.5 582.9 625.8C584.7 628.3 585.8 629.0 588.6 629.0C590.5 629.0 592.0 628.6 592.0 628.2C592.0 627.8 590.4 625.9 588.5 624.0C586.6 622.1 585.0 620.2 585.0 619.7C585.0 619.2 586.6 617.0 588.5 614.9C591.5 611.5 592.0 610.3 592.0 606.0C592.0 601.4 592.2 601.0 594.8 600.5C599.7 599.5 607.4 596.9 613.5 594.1C616.8 592.6 621.3 590.5 623.4 589.6L627.3 587.9L630.4 590.9C633.0 593.5 633.4 594.7 633.2 598.4C633.1 602.1 633.4 602.9 635.2 603.3C637.7 604.0 637.3 606.3 633.5 614.3C631.2 619.1 630.4 622.0 631.5 622.0C631.7 622.0 635.2 620.9 639.2 619.6C653.1 615.0 671.5 604.0 677.2 596.9C678.9 594.7 680.9 593.0 681.6 593.0C682.9 593.0 684.0 595.2 684.0 598.0C684.0 600.2 685.3 603.4 692.1 617.6C697.1 628.2 700.5 633.0 703.0 633.0C703.9 633.0 706.5 629.7 709.1 625.2Z"/></symbol>
+    <symbol id="m-ovelha" viewBox="0 0 64 64"><g fill="none" stroke="#0B1026" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M24 50v6M40 50v6"/><path fill="#fff" d="M14 34a8 8 0 0 1 6-12a9 9 0 0 1 14-6a9 9 0 0 1 14 4a8 8 0 0 1 4 14a8 8 0 0 1-8 12a9 9 0 0 1-14 2a9 9 0 0 1-12-4a8 8 0 0 1-4-10z"/><path d="M23 30l-5-3M41 30l5-3"/><ellipse cx="32" cy="34" rx="9" ry="8" fill="#fff"/><circle cx="28.5" cy="33" r="1.4" fill="#0B1026" stroke="none"/><circle cx="35.5" cy="33" r="1.4" fill="#0B1026" stroke="none"/><ellipse cx="25.8" cy="37" rx="2" ry="1.2" fill="#F4A3B5" stroke="none"/><ellipse cx="38.2" cy="37" rx="2" ry="1.2" fill="#F4A3B5" stroke="none"/><path d="M30.5 37.5q1.5 1.2 3 0"/></g></symbol>
+    <symbol id="m-pomba" viewBox="0 0 64 64"><g fill="none" stroke="#0B1026" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M50 31c4 1 8 5 9 10"/><ellipse cx="58" cy="35" rx="3" ry="1.6" fill="#8BCB8F" transform="rotate(40 58 35)"/><ellipse cx="54" cy="40" rx="3" ry="1.6" fill="#8BCB8F" transform="rotate(-30 54 40)"/><path fill="#fff" d="M8 40c6 0 10-4 14-10c4-6 10-10 17-9c5 1 8 5 8 9l7 2-7 3c-1 8-8 14-19 15c-8 1-15-3-20-10z"/><path fill="#fff" d="M20 38c4-8 12-10 18-7c-2 7-9 12-18 7z"/><circle cx="43" cy="27" r="1.5" fill="#0B1026" stroke="none"/><ellipse cx="42" cy="32" rx="2" ry="1.2" fill="#F4A3B5" stroke="none"/></g></symbol>
+    <symbol id="m-peixe" viewBox="0 0 64 64"><g fill="none" stroke="#0B1026" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path fill="#fff" d="M8 32c8-12 26-14 38-4l10-8v24l-10-8c-12 10-30 8-38-4z"/><path d="M32 23q4 9 0 18"/><circle cx="18" cy="30" r="1.5" fill="#0B1026" stroke="none"/><ellipse cx="21" cy="35" rx="2" ry="1.2" fill="#F4A3B5" stroke="none"/><path d="M10 34q2 1 3 0"/></g></symbol>
+    <symbol id="m-pao" viewBox="0 0 64 64"><g fill="none" stroke="#0B1026" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path fill="#FFF4CC" d="M10 44V30c0-8 8-14 22-14s22 6 22 14v14a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4z"/><path d="M22 21l-3 5M33 19l-3 5M44 21l-3 5"/><circle cx="26" cy="36" r="1.5" fill="#0B1026" stroke="none"/><circle cx="38" cy="36" r="1.5" fill="#0B1026" stroke="none"/><ellipse cx="22.5" cy="40" rx="2" ry="1.2" fill="#F4A3B5" stroke="none"/><ellipse cx="41.5" cy="40" rx="2" ry="1.2" fill="#F4A3B5" stroke="none"/><path d="M30 40q2 1.6 4 0"/></g></symbol>
+    <symbol id="m-uva" viewBox="0 0 64 64"><g fill="none" stroke="#0B1026" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M34 19V10"/><path fill="#8BCB8F" d="M34 13c4-6 12-6 15-2c-4 4-11 5-15 2z"/><circle cx="24" cy="25" r="6" fill="#B9A8F0"/><circle cx="44" cy="25" r="6" fill="#B9A8F0"/><circle cx="34" cy="24" r="6" fill="#B9A8F0"/><circle cx="27" cy="35" r="6" fill="#B9A8F0"/><circle cx="41" cy="35" r="6" fill="#B9A8F0"/><circle cx="34" cy="46" r="9" fill="#B9A8F0"/><circle cx="30.5" cy="45" r="1.4" fill="#0B1026" stroke="none"/><circle cx="37.5" cy="45" r="1.4" fill="#0B1026" stroke="none"/><ellipse cx="28" cy="49" rx="1.8" ry="1.1" fill="#F4A3B5" stroke="none"/><ellipse cx="40" cy="49" rx="1.8" ry="1.1" fill="#F4A3B5" stroke="none"/><path d="M32.5 49q1.5 1.2 3 0"/></g></symbol>
+  </defs>
+</svg>
+
+<div id="app"></div>
+
+<dialog id="vsheet" class="sheet" aria-labelledby="vtitle">
+  <div class="sheet-head">
+    <span class="sheet-grip" aria-hidden="true"></span>
+    <div class="sheet-title">
+      <h2 id="vtitle"></h2>
+      <button class="sheet-close" type="button" data-close aria-label="Fechar"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0B1026" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="vtabs" id="vtabs" role="tablist" aria-label="Versículos desta carta"></div>
+  </div>
+  <div class="sheet-body" id="vbody" role="tabpanel" aria-live="polite"></div>
+  <div class="sheet-foot">
+    <small>Almeida (domínio público).<br>Quer outra tradução?</small>
+    <a id="vlink" href="#" target="_blank" rel="noopener">LER NA NVI<svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0B1026" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5"/></svg></a>
+  </div>
+</dialog>
+
+<script>
+/* =====================================================================
+   BARALHO — edite à vontade. Formato: { q, a:true|false|null, tag?, exp, ref, conversa }
+   a:true = PODE (verde) · a:false = NÃO PODE (vermelho) · a:null = DEPENDE (amarelo, pra temas em que cristãos sinceros divergem)
+   ===================================================================== */
+const DECK = [
+  { q:"Contar uma mentirinha pra não magoar alguém.", a:false,
+    exp:"A Bíblia pede verdade com amor. Dá pra ser gentil e cuidadoso sem inventar nada: escolher bem as palavras não é o mesmo que mentir.",
+    ref:"Ef 4:15,25 · Cl 3:9",
+    conversa:"Quando foi a última vez que você achou mais fácil mentir do que falar a verdade com jeito?" },
+  { q:"Ficar com raiva de alguém.", a:true, tag:"Pode (sem pecar)",
+    exp:"Sentir raiva não é pecado em si. O problema é o que a gente faz com ela e deixar ela durar até virar mágoa.",
+    ref:"Ef 4:26-27",
+    conversa:"O que te ajuda a esfriar a cabeça antes de agir com raiva?" },
+  { q:"Não perdoar alguém, mas também não fazer nada contra a pessoa.", a:false,
+    exp:"Rancor em silêncio continua sendo falta de perdão. Perdoar é soltar a dívida, não só evitar a vingança.",
+    ref:"Mt 6:14-15 · Cl 3:13",
+    conversa:"Qual a diferença entre perdoar e confiar de novo na pessoa?" },
+  { q:"Pagar imposto mesmo achando o governo corrupto.", a:true, tag:"Pode (e deve)",
+    exp:"Jesus e Paulo mandaram pagar impostos sob o Império Romano, que estava longe de ser justo. Cumprir o dever não é apoiar o erro.",
+    ref:"Mt 22:21 · Rm 13:6-7",
+    conversa:"Onde mais a gente deixa de fazer o certo porque \"o sistema também não faz\"?" },
+  { q:"Comentar os defeitos de alguém pelas costas, mesmo sendo tudo verdade.", a:false,
+    exp:"Ser verdade não transforma fofoca em coisa boa. Se não edifica e a pessoa não está ali pra se defender, não é conversa, é fofoca.",
+    ref:"Pv 16:28 · Tg 4:11 · Ef 4:29",
+    conversa:"Como sair de uma roda de fofoca sem ficar chato?" },
+  { q:"Questionar Deus e desabafar com Ele quando a vida tá difícil.", a:true,
+    exp:"Os Salmos estão cheios de perguntas sinceras pra Deus, e o próprio Jesus clamou na cruz usando um deles. Desabafar com Deus também é fé.",
+    ref:"Sl 13 · Sl 22:1 · Mt 27:46",
+    conversa:"Você se sente à vontade pra ser sincero com Deus quando tá mal?" },
+  { q:"Levar umas canetas e folhas da empresa pra casa.", a:false,
+    exp:"Pegar o que não é seu é roubo, seja uma caneta ou um notebook. Quem é fiel no pouco aprende a ser fiel no muito, e isso vale mesmo quando ninguém tá olhando.",
+    ref:"Ef 4:28 · Lc 16:10",
+    conversa:"Em que situação a gente costuma achar que \"coisa pequena não conta\"?" },
+  { q:"Ficar com o troco que o caixa te deu a mais.", a:false,
+    exp:"Honestidade vale mesmo quando o erro foi do outro. Aquele dinheiro vai fazer falta pra alguém no fim do dia.",
+    ref:"Pv 11:1 · Pv 20:23",
+    conversa:"Já devolveu algo que ninguém ia perceber? Como foi?" },
+  { q:"Ajudar alguém que te fez mal.", a:true, tag:"Pode (e deve)",
+    exp:"Amar o inimigo é um dos ensinos centrais de Jesus. Fazer o bem pra quem te feriu é vencer o mal com o bem.",
+    ref:"Lc 6:27-28 · Rm 12:20-21",
+    conversa:"O que torna tão difícil fazer o bem pra quem te machucou?" },
+  { q:"Revidar quando alguém te ofende.", a:false,
+    exp:"A vingança pertence a Deus. Dá pra se posicionar e colocar limite sem devolver na mesma moeda.",
+    ref:"Rm 12:17-19 · Mt 5:38-39",
+    conversa:"Qual a diferença entre se defender e revidar?" },
+  { q:"Comer carne de porco.", a:true,
+    exp:"Jesus declarou todos os alimentos puros, e Pedro recebeu a mesma mensagem numa visão. Comida não aproxima nem afasta ninguém de Deus.",
+    ref:"Mc 7:18-19 · At 10:15 · Cl 2:16",
+    conversa:"Que regras a gente às vezes coloca acima do que importa de verdade?" },
+  { q:"Ter amizade próxima com quem não é cristão.", a:true,
+    exp:"Jesus andava com pecadores e era chamado de amigo deles. Só vale ficar atento a quem está influenciando quem.",
+    ref:"Mc 2:15-17 · Mt 5:13-16 · 1Co 15:33",
+    conversa:"Seus amigos de fora da igreja veem diferença em você?" },
+  { q:"Fazer caridade principalmente pra ser visto e elogiado.", a:false,
+    exp:"Jesus disse que quem faz o bem pra aparecer já recebeu a recompensa: o aplauso. O bem que agrada a Deus não precisa de plateia.",
+    ref:"Mt 6:1-4",
+    conversa:"Postar uma boa ação é sempre errado? Onde fica o limite?" },
+  { q:"Colar na prova quando ninguém vai descobrir.", a:false,
+    exp:"Integridade é o que a gente faz quando ninguém está vendo. Fazer tudo como pra Deus inclui a prova.",
+    ref:"Pv 10:9 · Cl 3:23",
+    conversa:"Em que área da sua vida é mais fácil ser uma pessoa quando ninguém tá olhando?" },
+  { q:"Tirar um dia pra descansar sem fazer nada \"produtivo\".", a:true,
+    exp:"Descanso foi ideia de Deus desde a criação. Jesus também chamava os discípulos pra descansar. Parar não é preguiça.",
+    ref:"Êx 20:8-10 · Mc 6:31 · Sl 127:2",
+    conversa:"Você sente culpa quando descansa? Por quê?" },
+  { q:"Chorar e ficar triste mesmo tendo fé.", a:true,
+    exp:"Jesus chorou no túmulo de Lázaro, sabendo que ia ressuscitá-lo. Fé não apaga a tristeza, só muda a esperança.",
+    ref:"Jo 11:35 · Rm 12:15 · 1Ts 4:13",
+    conversa:"Como a gente pode chorar junto com alguém sem tentar consertar tudo?" },
+  { q:"Desrespeitar os pais porque eles \"não entendem nada\".", a:false,
+    exp:"Honrar não depende de concordar. Dá pra discordar com respeito, e esse é o único mandamento que vem com promessa.",
+    ref:"Êx 20:12 · Ef 6:1-3",
+    conversa:"Como honrar os pais quando a relação é difícil?" },
+  { q:"Julgar alguém pelo pecado dele achando que você é melhor.", a:false,
+    exp:"Jesus falou da trave no próprio olho e contou a história do fariseu e do publicano. Todo mundo precisa da mesma graça.",
+    ref:"Mt 7:1-5 · Lc 18:9-14",
+    conversa:"Que tipo de pecado dos outros você tem mais facilidade de julgar?" },
+  { q:"Ficar calado quando vê alguém sendo humilhado.", a:false,
+    exp:"Saber o bem e não fazer também é pecado. Às vezes defender alguém é só não deixar a pessoa sozinha.",
+    ref:"Pv 31:8-9 · Tg 4:17",
+    conversa:"O que te impede de se posicionar nessas horas?" },
+  { q:"Dizer \"não\" a um pedido de ajuda porque você está sobrecarregado.", a:true,
+    exp:"Jesus também se retirava pra descansar e orar. Ter limite não é egoísmo, desde que não vire desculpa pra nunca ajudar.",
+    ref:"Lc 5:15-16 · Gl 6:2-5",
+    conversa:"Como saber se o seu \"não\" é limite saudável ou só comodismo?" },
+  { q:"Baixar filme ou série pirata porque a assinatura é cara demais.", a:false,
+    exp:"Achar caro não dá direito de pegar sem pagar. Alguém trabalhou naquilo, e pegar o fruto do trabalho alheio sem permissão continua sendo roubo, mesmo digital e mesmo que \"todo mundo faça\".",
+    ref:"Êx 20:15 · Rm 13:7 · Lc 16:10",
+    conversa:"Por que pirataria quase não pesa na consciência, mas roubar uma loja pesaria?" },
+  { q:"Trabalhar ou fazer prova no domingo.", a:true,
+    exp:"Jesus disse que o sábado foi feito pro ser humano, e não o contrário. O Novo Testamento não prende o cristão a um dia sagrado. O que continua valendo é ter ritmo de descanso e não largar a comunhão.",
+    ref:"Mc 2:27 · Rm 14:5-6 · Cl 2:16",
+    conversa:"Se não é o dia que importa, o que torna um tempo realmente separado pra Deus?" },
+  { q:"Dizer que tá doente pra faltar no trabalho e descansar um dia.", a:false,
+    exp:"Descansar é bom e até ideia de Deus, mas conseguir isso mentindo não. Dá pra pedir folga, negociar, colocar limite. O atalho da mentira é o problema, não o descanso.",
+    ref:"Pv 12:22 · Cl 3:9 · Ef 4:25",
+    conversa:"Por que é tão mais fácil inventar uma desculpa do que falar \"tô esgotado\"?" },
+  { q:"Comprar algo caro só porque você quer muito.", a:true, tag:"Pode (sem virar ídolo)",
+    exp:"Deus dá coisas boas pra gente desfrutar, e ter algo bom não é pecado. O problema começa quando aquilo vira segurança, status ou dono do seu coração, e quando sobra pra você e nunca sobra pra ninguém.",
+    ref:"1Tm 6:17-19 · Ec 5:19 · Mt 6:19-21",
+    conversa:"Como saber se uma coisa que você quer já virou ídolo?" },
+  { q:"Orar pedindo coisas pra você mesmo, tipo um emprego ou um carro.", a:true,
+    exp:"Jesus mandou pedir, buscar e bater, e Paulo diz pra apresentar tudo a Deus. Pedir não é egoísmo. O que Tiago critica é pedir com motivo errado, só pra esbanjar.",
+    ref:"Fp 4:6 · Mt 7:7-11 · Tg 4:3",
+    conversa:"Você ora mais pedindo ou agradecendo? E quando a resposta é \"não\"?" },
+  { q:"Parar de ir pra igreja porque dá pra ter fé sozinho em casa.", a:false,
+    exp:"Fé cristã nunca foi carreira solo. A Bíblia compara a igreja a um corpo: nenhuma parte sobrevive desligada das outras. Dá pra ter fé em casa, mas a gente foi feito pra crescer junto.",
+    ref:"Hb 10:24-25 · At 2:42 · 1Co 12:21",
+    conversa:"O que a comunidade te dá que você não consegue sozinho? E o que você dá pra ela?" },
+  { q:"Falar palavrão numa roda onde ninguém liga.", a:false,
+    exp:"A Bíblia pede que da nossa boca saia o que edifica, e não palavra torpe. Não é sobre ofender alguém ali: é sobre o que a nossa fala revela e forma em nós.",
+    ref:"Ef 4:29 · Cl 3:8 · Tg 3:10",
+    conversa:"Palavrão é pior que uma fala educada mas cheia de veneno? Onde fica o limite?" },
+  { q:"Mandar no grupo o print de uma conversa privada de alguém.", a:false,
+    exp:"Quem espalha o que foi dito em confiança trai a pessoa. Mesmo que seja engraçado ou verdade, expor alguém sem ela saber não é amar o próximo como a si mesmo.",
+    ref:"Pv 11:13 · Pv 17:9 · Mt 7:12",
+    conversa:"Você gostaria que o seu histórico de conversa fosse parar num grupo?" },
+  { q:"Questionar o que o pastor ensinou e conferir na Bíblia.", a:true, tag:"Pode (e deve)",
+    exp:"Os bereanos foram elogiados justamente por conferir nas Escrituras o que Paulo pregava. Examinar tudo e reter o que é bom é sinal de maturidade, não de rebeldia, desde que com respeito.",
+    ref:"At 17:11 · 1Ts 5:21 · 1Jo 4:1",
+    conversa:"Qual a diferença entre questionar com humildade e desconfiar de tudo?" },
+  { q:"Sentir inveja do sucesso de um amigo, mesmo sem fazer nada contra ele.", a:false,
+    exp:"A cobiça já está nos Dez Mandamentos, e ela acontece por dentro. Sentir a pontada é humano, mas alimentar a inveja não dá. O caminho é levar pra Deus e aprender a comemorar com quem comemora.",
+    ref:"Êx 20:17 · Tg 3:16 · Rm 12:15",
+    conversa:"De quem é mais difícil comemorar uma vitória: de um estranho ou de um amigo próximo?" },
+  { q:"Desobedecer o governo quando ele manda negar a fé.", a:true, tag:"Pode (e deve)",
+    exp:"Pagar imposto e respeitar autoridade é o normal. Mas quando a ordem é contra Deus, os apóstolos responderam que importa obedecer antes a Deus. Daniel e os amigos dele fizeram o mesmo, aceitando as consequências.",
+    ref:"At 5:29 · Dn 3:16-18 · Dn 6:10",
+    conversa:"Onde fica a linha entre \"respeitar a autoridade\" e \"obedecer a Deus primeiro\" no dia a dia?" },
+  { q:"Chamar a atenção de um amigo cristão que tá vivendo em pecado.", a:true, tag:"Pode (com amor)",
+    exp:"Jesus ensinou a ir falar direto com a pessoa, a sós. Paulo pede pra restaurar com mansidão, olhando pra si mesmo. Não julgar não é o mesmo que nunca falar nada: ferida de amigo é sinal de cuidado.",
+    ref:"Mt 18:15 · Gl 6:1 · Pv 27:6",
+    conversa:"Isso não contradiz a carta do \"não julgar\"? Qual a diferença na prática?" },
+  { q:"Pegar dinheiro emprestado e não devolver porque o amigo nem cobra.", a:false,
+    exp:"O salmo chama de injusto quem pega emprestado e não paga. O amigo não cobrar é gentileza dele, não perdão da dívida. Só fica quitado se ele mesmo disser que é presente.",
+    ref:"Sl 37:21 · Rm 13:8",
+    conversa:"Já deixou de cobrar alguém pra não estragar a amizade? Como foi?" },
+  { q:"Duvidar de Deus de vez em quando.", a:true,
+    exp:"João Batista, na prisão, mandou perguntar se Jesus era mesmo o Messias, e Jesus respondeu com carinho. Um pai disse \"eu creio, ajuda a minha falta de fé\" e foi atendido. Dúvida levada a Deus não é o fim da fé.",
+    ref:"Mt 11:2-6 · Mc 9:24 · Jd 22",
+    conversa:"Você se sente livre pra falar das suas dúvidas aqui na célula?" },
+  { q:"Dizer \"foi o inimigo\" quando você mesmo escolheu errar.", a:false,
+    exp:"Tiago diz que cada um é tentado pelo próprio desejo. Jogar a culpa nos outros é tão antigo quanto Adão e Eva. Assumir o erro é o primeiro passo pro perdão.",
+    ref:"Tg 1:14-15 · Gn 3:12-13 · 1Jo 1:9",
+    conversa:"Por que é tão difícil falar só \"eu errei\", sem nenhum \"mas\"?" },
+  { q:"Pedir perdão a Deus pela mesma coisa pela quinquagésima vez.", a:true,
+    exp:"Se a gente confessa, Ele é fiel pra perdoar. As misericórdias dEle se renovam toda manhã, e Jesus mandou a gente perdoar setenta vezes sete. Ele não cansa de você, só não quer que você se acomode.",
+    ref:"1Jo 1:9 · Lm 3:22-23 · Mt 18:21-22",
+    conversa:"Pedir perdão de novo é arrependimento ou só alívio da culpa? Como saber?" },
+  { q:"Vender um celular usado sem contar o defeito que o comprador não perguntou.", a:false,
+    exp:"Esconder a verdade pra levar vantagem também é desonestidade. Balança enganosa é coisa que Deus detesta. Trate o comprador como você queria ser tratado no lugar dele.",
+    ref:"Pv 11:1 · Fp 2:4 · Mt 7:12",
+    conversa:"Omitir é o mesmo que mentir? Em que situações você acha que não é?" },
+  { q:"Usar \"Deus me falou\" pra encerrar uma discussão.", a:false,
+    exp:"Usar o nome de Deus como trunfo pra ganhar uma conversa é tomar o nome dEle em vão. Se veio mesmo de Deus, aguenta ser conferido com a Bíblia e com irmãos maduros.",
+    ref:"Êx 20:7 · Jr 23:31-32 · 1Ts 5:21",
+    conversa:"Como saber se foi Deus falando ou só a sua própria vontade?" },
+  { q:"Malhar e cuidar da aparência pra ficar bonito.", a:true, tag:"Pode (com equilíbrio)",
+    exp:"Cuidar do corpo tem valor, e ele é templo do Espírito. Só não dá pra colocar a autoestima ali: a beleza que Deus mais valoriza é a do coração, que não envelhece.",
+    ref:"1Co 6:19-20 · 1Tm 4:8 · 1Pe 3:3-4",
+    conversa:"Quando o cuidado com a aparência deixa de ser saudável?" },
+  { q:"Falar \"juro por Deus\" pra convencer alguém de que é verdade.", a:false,
+    exp:"Jesus ensinou que o nosso sim deve ser sim e o nosso não, não. Se a gente precisa jurar pra ser acreditado, o problema é a confiança na nossa palavra, e o nome de Deus não é carimbo.",
+    ref:"Mt 5:34-37 · Tg 5:12",
+    conversa:"As pessoas acreditam na sua palavra sem você precisar jurar?" },
+
+  /* ---------- Brasil raiz ---------- */
+  { q:"Ouvir música secular, que não é gospel.", a:true, tag:"Pode (com discernimento)",
+    exp:"A Bíblia não divide música em gospel e secular. O que ela pede é encher a mente com o que é verdadeiro, puro e bom. Tem música \"do mundo\" linda e tem letra que só alimenta o que Deus quer tirar de você.",
+    ref:"Fp 4:8 · 1Co 10:31 · Cl 3:17",
+    conversa:"Tem alguma música que você ouve e sabe que te puxa pra baixo? E alguma \"secular\" que te aproxima de Deus?" },
+  { q:"Apostar na bet ou no joguinho do tigrinho, só de leve.", a:false,
+    exp:"A Bíblia não fala de bet, mas os princípios são claros: a aposta é desenhada pra casa ganhar, alimenta a vontade de enriquecer rápido e já destruiu muita família brasileira. Dinheiro que vem fácil, vai fácil, e quem quer ficar rico cai em armadilha.",
+    ref:"1Tm 6:9-10 · Pv 13:11 · Hb 13:5",
+    conversa:"E a Mega da Virada com a família? É diferente da bet ou é a mesma coisa?" },
+  { q:"Cair na folia do carnaval, no esquema \"o que acontece no bloco fica no bloco\".", a:false,
+    exp:"O problema não é festa nem marchinha: Jesus foi em casamento e tinha vinho. O problema é o pacote que esse esquema vende, bebedeira e \"vale tudo\", que a Bíblia chama pelo nome. Nada fica no bloco: fica em você.",
+    ref:"Gl 5:19-21 · Rm 13:13-14 · 1Pe 4:3-4",
+    conversa:"Dá pra curtir o feriado e a cultura sem entrar no clima de vale-tudo? Como?" },
+  { q:"Ir numa festa à fantasia de Halloween.", a:null, tag:"Depende",
+    exp:"Aqui cristãos sinceros discordam. Pra uns é só fantasia e doce; pra outros é celebrar morte e ocultismo. Paulo ensina liberdade de consciência, mas manda não participar das obras das trevas e cuidar pra não fazer o irmão tropeçar. A pergunta é: o que a festa celebra e o que faz em você?",
+    ref:"Ef 5:11 · 1Co 10:23-31 · Rm 14:22-23",
+    conversa:"Onde fica a linha entre brincadeira cultural e mexer com o que não se deve?" },
+  { q:"Fazer uma tatuagem.", a:null, tag:"Depende",
+    exp:"Levítico proíbe marcas no corpo, num contexto de rituais pelos mortos da lei de Israel. Muitos entendem que isso não se aplica igual hoje; outros veem ali um princípio. O Novo Testamento foca no coração: por que você quer, o que vai escrever, e se honra a Deus com o seu corpo.",
+    ref:"Lv 19:28 · 1Co 6:19-20 · Rm 14:5",
+    conversa:"Se você fosse fazer uma tatuagem hoje, qual seria? E por quê?" },
+  { q:"Tomar uma cerveja com os amigos.", a:true, tag:"Pode (sem se embriagar)",
+    exp:"A Bíblia não proíbe beber, e o primeiro milagre de Jesus foi transformar água em vinho. O que ela proíbe é a embriaguez. E Paulo lembra que, se a sua bebida faz um irmão tropeçar, vale abrir mão. Cada igreja tem seus costumes, e isso também merece respeito.",
+    ref:"Jo 2:1-11 · Ef 5:18 · Rm 14:21",
+    conversa:"Por que esse tema divide tanto as igrejas no Brasil? Onde é liberdade e onde é tropeço?" },
+  { q:"Ler o horóscopo só por diversão.", a:false,
+    exp:"Deus proíbe buscar orientação nos astros e adivinhações, e Isaías ironiza quem confia nos astrólogos. \"Só por diversão\" é a porta de entrada: aos poucos, signo vira desculpa e previsão vira direção.",
+    ref:"Dt 18:10-12 · Is 47:13-14 · Jr 10:2",
+    conversa:"Você já se pegou explicando alguém (ou você mesmo) pelo signo?" },
+  { q:"Pular sete ondas e fazer simpatia pra ter sorte no ano novo.", a:false,
+    exp:"Simpatia é tentar garantir o futuro com ritual, e o futuro está nas mãos de Deus, não da sorte. Usar branco ou comer lentilha não é o problema; o problema é colocar a confiança no rito em vez de em Deus.",
+    ref:"Pv 16:33 · Mt 6:31-33 · Dt 18:10",
+    conversa:"Que \"superstições de família\" a gente repete sem nem pensar?" },
+  { q:"Ir na festa junina da escola ou do bairro.", a:null, tag:"Depende",
+    exp:"A festa junina nasceu homenageando santos católicos, e muita igreja prefere fazer a \"festa julina\". Paulo diz que comer não aproxima nem afasta de Deus e que cada um deve estar convicto na própria consciência, cuidando pra não ferir a do irmão. Quentão, quadrilha e paçoca não salvam nem condenam ninguém.",
+    ref:"1Co 8:8-9 · 1Co 10:25-31 · Rm 14:5-6",
+    conversa:"Quando uma tradição cultural vira problema pra fé? Dá pra ressignificar?" },
+  { q:"Namorar alguém que não é cristão.", a:false,
+    exp:"A Bíblia pede pra não se colocar em jugo desigual: é como dois bois puxando pra lados diferentes. Amizade com quem não crê é ótimo; dividir a vida inteira com quem não tem a mesma direção é outra coisa.",
+    ref:"2Co 6:14 · 1Co 7:39 · Am 3:3",
+    conversa:"E se a pessoa for incrível, melhor que muito crente? O que você diria pra um amigo nessa?" },
+  { q:"Morar junto antes de casar, pra \"testar\" a relação.", a:false,
+    exp:"A Bíblia guarda o sexo e a vida a dois pro casamento, uma aliança assumida diante de Deus e das pessoas. Casamento não é período de teste: é compromisso. Isso não diminui quem já está nessa situação: a graça sempre abre caminho de volta.",
+    ref:"Hb 13:4 · 1Co 6:18-20 · 1Ts 4:3-4",
+    conversa:"Por que a cultura diz que é mais sábio testar antes? O que a gente responde com amor?" },
+  { q:"Comemorar o Natal mesmo sabendo que Jesus não nasceu em 25 de dezembro.", a:true,
+    exp:"A data não está na Bíblia, mas celebrar o nascimento de Jesus está: os anjos fizeram festa. Paulo deixa livre quem separa um dia pro Senhor. O desafio é Jesus não sumir no meio do Papai Noel e das compras.",
+    ref:"Lc 2:10-14 · Rm 14:5-6",
+    conversa:"O que a sua família poderia fazer pra Jesus ser o centro do Natal de verdade?" },
+  { q:"Dar um \"cafezinho\" pro guarda pra escapar da multa.", a:false,
+    exp:"Propina é suborno, por menor que seja, e a Bíblia diz que suborno cega e perverte a justiça. O famoso jeitinho brasileiro não ganha desconto no Reino de Deus.",
+    ref:"Êx 23:8 · Pv 17:23 · Rm 13:1-2",
+    conversa:"Em que outras situações o \"jeitinho\" aparece no nosso dia a dia sem a gente perceber?" },
+  { q:"Usar carteirinha de estudante emprestada pra pagar meia-entrada.", a:false,
+    exp:"É se passar por outra pessoa pra pagar menos. Mesmo que o ingresso seja caro e todo mundo faça, continua sendo mentira e levar vantagem indevida. Quem é fiel no pouco é fiel no muito.",
+    ref:"Pv 11:1 · Lc 16:10 · Ef 4:25",
+    conversa:"Qual o \"pequeno golpe\" mais aceito no Brasil? Por que a gente normaliza?" },
+
+  /* ---------- Eleição (sem partido: o foco é a postura do cristão) ---------- */
+  { q:"Compartilhar no grupo da família uma notícia que favorece seu candidato, sem conferir se é verdade.", a:false,
+    exp:"Espalhar boato é falso testemunho, mesmo quando é \"a favor do lado certo\". A Bíblia manda não espalhar notícia falsa e ouvir os dois lados antes de concluir. Mentira a serviço de uma causa boa continua sendo mentira.",
+    ref:"Êx 23:1 · Pv 18:17 · Ef 4:25",
+    conversa:"Você já repassou algo que depois descobriu ser falso? O que fez depois?" },
+  { q:"Xingar e humilhar quem vota diferente de você nas redes.", a:false,
+    exp:"Paulo pede pra não difamar ninguém e tratar todos com mansidão. Dá pra discordar com firmeza sem desumanizar. Quem lê seus comentários deveria reconhecer Jesus neles.",
+    ref:"Tt 3:1-2 · Ef 4:29-31 · 1Pe 3:15-16",
+    conversa:"Se alguém lesse só os seus comentários sobre política, saberia que você é cristão?" },
+  { q:"Cortar relação com um parente porque ele vota no outro lado.", a:false,
+    exp:"No que depender de você, viva em paz com todos. Política passa a cada quatro anos; família e o testemunho de amor ficam. Dá pra colocar limite em brigas sem cortar a pessoa da sua vida.",
+    ref:"Rm 12:18 · Mt 5:9 · Ef 4:3",
+    conversa:"Como manter o almoço de domingo em paz em ano de eleição?" },
+  { q:"Achar que um político vai salvar o Brasil.", a:false,
+    exp:"Os salmos avisam pra não confiar em príncipes nem em ninguém que não pode salvar. Votar com responsabilidade é importante, mas esperança no lugar errado vira idolatria, venha de que lado vier.",
+    ref:"Sl 146:3-5 · Sl 20:7 · Jr 17:5-7",
+    conversa:"Como saber se a política já ocupou um espaço no coração que é de Deus?" },
+  { q:"Dizer que cristão de verdade só pode votar em um lado.", a:false,
+    exp:"Os princípios bíblicos não mudam, mas cristãos sinceros pesam esses princípios de jeitos diferentes na hora de votar. Julgar a fé do irmão pelo voto é tomar o lugar de Deus. A nossa cidadania principal está no céu.",
+    ref:"Rm 14:4,10 · Fp 3:20 · Gl 3:28",
+    conversa:"O que une a gente aqui na célula que é maior do que qualquer eleição?" },
+  { q:"Votar em quem o pastor indicou, sem pesquisar nada.", a:false, tag:"Não pode (sem pensar)",
+    exp:"Ouvir conselho de líderes é saudável, mas cada um vai prestar contas a Deus por si. Os bereanos conferiam até o que Paulo dizia. Voto é decisão de consciência: pesquisa, ora e decide.",
+    ref:"Rm 14:12 · At 17:11 · 1Ts 5:21",
+    conversa:"Qual o papel da igreja na política? Onde ajuda e onde passa do ponto?" },
+  { q:"Lutar contra a injustiça e querer mudar o sistema.", a:true, tag:"Pode (e deve)",
+    exp:"Os profetas denunciaram rei, juiz e rico que oprimia pobre. Deus pede justiça correndo como um rio. Ser cristão não é ser conformado: é buscar o bem da cidade, defender quem não tem voz e fazer isso do jeito de Jesus.",
+    ref:"Mq 6:8 · Am 5:24 · Is 1:17 · Jr 29:7",
+    conversa:"Que injustiça perto de você a célula poderia ajudar a enfrentar de verdade?" },
+  { q:"Apoiar uma revolução violenta pra derrubar um governo injusto.", a:false,
+    exp:"Jesus mandou Pedro guardar a espada e disse que o Reino dEle não avança na força. Paulo manda vencer o mal com o bem. Resistir ao erro e até desobedecer quando a ordem é contra Deus é uma coisa; pegar em armas por uma causa é outra.",
+    ref:"Mt 26:52 · Jo 18:36 · Rm 12:17-21",
+    conversa:"Na história, cristãos já enfrentaram tiranos. Qual a diferença entre resistir e revidar?" },
+  { q:"Anular o voto ou nem ir votar.", a:null, tag:"Depende",
+    exp:"Deus mandou o povo buscar o bem da cidade onde vivia, e o voto é uma ferramenta pra isso. Mas há quem anule por convicção, depois de pesquisar e orar, e isso é diferente de não votar por preguiça ou desânimo. A pergunta é: você está fugindo ou decidindo?",
+    ref:"Jr 29:7 · Pv 29:2 · Rm 13:1",
+    conversa:"Política te dá esperança ou desânimo? Como a fé muda isso?" },
+  { q:"Trocar o voto por uma cesta básica ou um favor.", a:false,
+    exp:"Vender o voto é aceitar suborno, e quem faz isso entrega o futuro da cidade por pouco. A Bíblia diz que quem odeia suborno vive. Cristão vota pensando no bem de todos, não no próprio bolso.",
+    ref:"Êx 23:8 · Pv 15:27 · Fp 2:4",
+    conversa:"E prometer voto em troca de uma vaga de emprego, é a mesma coisa?" },
+  { q:"Orar por um governante que você não suporta.", a:true, tag:"Pode (e deve)",
+    exp:"Paulo pediu oração por todos os que estão no poder, numa época de imperadores que perseguiam cristãos. Orar não é concordar: é pedir que Deus dê sabedoria e que a gente viva em paz.",
+    ref:"1Tm 2:1-2 · Mt 5:44 · Jr 29:7",
+    conversa:"Bora fazer isso agora? Quem a célula pode colocar em oração hoje?" },
+];
+
+/* =====================================================================
+   Config
+   ===================================================================== */
+const PEER_PREFIX = "pode-ou-nao-celula-v1-";
+const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // sem I e O
+const CODE_RE = /^[A-HJ-NP-Z]{4}$/;
+const JOIN_TIMEOUT = 12000;
+const PING_EVERY = 4000;
+const SILENCE_LIMIT = 30000;
+const MASCOTS = ["ovelha", "pomba", "peixe", "pao", "uva"];
+const PEER_CDNS = [
+  "https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js",
+  "https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js",
+];
+const QR_CDN = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+
+/* =====================================================================
+   Utilidades
+   ===================================================================== */
+const $ = (s) => document.querySelector(s);
+const ESC = { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" };
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ESC[c]);
+const pad2 = (n) => String(n).padStart(2, "0");
+const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+
+function shuffle(n) {
+  const a = Array.from({ length: n }, (_, k) => k);
+  for (let k = a.length - 1; k > 0; k--) {
+    const j = Math.floor(Math.random() * (k + 1));
+    [a[k], a[j]] = [a[j], a[k]];
+  }
+  return a;
+}
+function genCode() {
+  let c = "";
+  const buf = new Uint32Array(4);
+  crypto.getRandomValues(buf);
+  for (const x of buf) c += CODE_CHARS[x % CODE_CHARS.length];
+  return c;
+}
+function cleanCode(v) { return String(v || "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 4); }
+function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function recall(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
+
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = src; s.async = true; s.crossOrigin = "anonymous";
+    s.onload = () => res();
+    s.onerror = () => { s.remove(); rej(new Error("falhou: " + src)); };
+    document.head.appendChild(s);
+  });
+}
+// PeerJS com fallback de CDN, na ordem
+const peerReady = (async () => {
+  for (const url of PEER_CDNS) {
+    try { await loadScript(url); if (window.Peer) return true; } catch (e) {}
+  }
+  return false;
+})();
+const qrReady = loadScript(QR_CDN).then(() => !!window.QRCode, () => false);
+
+/* ---------- ícones ---------- */
+const I = {
+  check: (c, s = 26, w = 3.4) => `<svg aria-hidden="true" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L19.5 7"/></svg>`,
+  x: (c, s = 24, w = 3.4) => `<svg aria-hidden="true" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+  crown: (s = 15, label = true) => `<svg ${label ? 'aria-label="Líder" role="img"' : 'aria-hidden="true"'} viewBox="0 0 24 24" width="${s}" height="${s}" fill="#0B1026"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>`,
+  alert: `<svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg>`,
+  phone: `<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F5E52E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>`,
+  eye: `<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F5E52E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  arrow: `<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F5E52E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`,
+  reload: `<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F5E52E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>`,
+  book: `<svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1A3CD1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg>`,
+  depends: `<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#F5E52E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9.2a3 3 0 1 1 4.2 2.8c-.8.4-1.2 1-1.2 1.9v.6M12 18h.01"/></svg>`,
+  bubble: (c = "#0B1026", s = 16) => `<svg aria-hidden="true" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>`,
+  voted: `<svg aria-label="votou" role="img" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="10" fill="#0B1026"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="#F5E52E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  waiting: (c = "#B9C6FF") => `<svg aria-label="ainda não votou" role="img" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="8.5" fill="none" stroke="${c}" stroke-width="2.2" stroke-dasharray="3 3"/></svg>`,
+};
+const eagle = (cls = "") => `<svg class="${cls}" viewBox="0 0 1407 633" aria-hidden="true" focusable="false"><use href="#eagle"/></svg>`;
+const mascot = (name, style, cls = "") => `<svg class="mascot ${cls}" viewBox="0 0 64 64" style="${style}" aria-hidden="true" focusable="false"><use href="#m-${name}"/></svg>`;
+const brand = () => `<div class="brand">${eagle()}<span>AQUILA</span></div>`;
+const codeCards = (code, cls = "tilt") => `<div class="code ${cls}" aria-hidden="true">${[...code].map((ch) => `<span>${esc(ch)}</span>`).join("")}</div>`;
+const backCard = (cls = "") => `<div class="back ${cls}">${eagle()}<b>PODE OU<br>NÃO PODE?</b></div>`;
+
+/* =====================================================================
+   Estado de UI
+   ===================================================================== */
+const params = new URLSearchParams(location.search);
+const PRESET = cleanCode(params.get("sala"));
+const HAS_PRESET = CODE_RE.test(PRESET);
+
+const ui = {
+  screen: "home",        // home | connecting | game
+  isHost: false,
+  myId: null,
+  name: recall("pon-nome"),
+  code: HAS_PRESET ? PRESET : "",
+  err: "", errField: "",
+  connectMsg: "",
+  s: null,               // estado público atual
+  myVote: null,          // true | false | null
+  voteKey: null,
+};
+let lastKey = null;
+
+/* =====================================================================
+   Wake Lock
+   ===================================================================== */
+let wakeLock = null, wantWake = false;
+async function requestWake() {
+  wantWake = true;
+  try {
+    if ("wakeLock" in navigator && document.visibilityState === "visible" && !wakeLock) {
+      wakeLock = await navigator.wakeLock.request("screen");
+      wakeLock.addEventListener("release", () => { wakeLock = null; });
+    }
+  } catch (e) { wakeLock = null; }
+}
+document.addEventListener("visibilitychange", () => {
+  if (wantWake && document.visibilityState === "visible") requestWake();
+});
+
+/* =====================================================================
+   HOST (aparelho do líder = fonte da verdade)
+   ===================================================================== */
+const H = {
+  peer: null, opened: false, tries: 0,
+  conns: new Map(),      // peerId -> DataConnection
+  lastSeen: new Map(),   // peerId -> timestamp
+  players: [],           // {id, name, host}
+  phase: "lobby", code: "", order: [], i: 0, r: 0,
+  votes: new Map(),      // peerId -> boolean
+  reveal: null,
+  size: 20,              // cartas por rodada (líder escolhe no lobby)
+  timer: null, openTimer: null,
+};
+function sizeOptions() {
+  const opts = [10, 20, 30, 40].filter((n) => n < DECK.length);
+  opts.push(DECK.length);
+  return opts;
+}
+
+function uniqueName(name) {
+  const taken = new Set(H.players.map((p) => p.name.toLowerCase()));
+  if (!taken.has(name.toLowerCase())) return name;
+  let k = 2;
+  while (taken.has(`${name} ${k}`.toLowerCase())) k++;
+  return `${name} ${k}`;
+}
+
+function hostPublic() {
+  const s = {
+    phase: H.phase, code: H.code, r: H.r,
+    players: H.players.map((p) => ({ id: p.id, name: p.name, host: p.host, voted: H.phase === "vote" && H.votes.has(p.id) })),
+    i: H.i, total: H.order.length || DECK.length,
+  };
+  if (H.phase === "vote" || H.phase === "reveal") s.q = DECK[H.order[H.i]].q;
+  if (H.phase === "reveal") s.reveal = H.reveal;
+  return s;
+}
+
+function send(conn, msg) { try { if (conn && conn.open) conn.send(msg); } catch (e) {} }
+
+function hostBroadcast() {
+  const s = hostPublic();
+  for (const [id, c] of H.conns) if (H.players.some((p) => p.id === id)) send(c, { type: "state", s });
+  applyState(s);
+}
+
+function hostCreate() {
+  ui.isHost = true;
+  H.code = genCode();
+  ui.code = H.code;
+  const peer = new Peer(PEER_PREFIX + H.code);
+  H.peer = peer;
+  clearTimeout(H.openTimer);
+  H.openTimer = setTimeout(() => {
+    if (!H.opened) failHome("Não deu pra criar a sala. Confere a internet e tenta de novo.");
+  }, JOIN_TIMEOUT);
+
+  peer.on("open", (id) => {
+    if (H.peer !== peer) return;
+    clearTimeout(H.openTimer);
+    H.opened = true;
+    ui.myId = id;
+    H.players = [{ id, name: ui.name, host: true }];
+    H.phase = "lobby"; H.i = 0; H.votes.clear();
+    H.order = shuffle(DECK.length);
+    requestWake();
+    clearInterval(H.timer);
+    H.timer = setInterval(hostTick, PING_EVERY);
+    hostBroadcast();
+  });
+  peer.on("connection", (conn) => {
+    conn.on("open", () => { H.conns.set(conn.peer, conn); H.lastSeen.set(conn.peer, Date.now()); });
+    conn.on("data", (d) => hostOnData(conn, d));
+    conn.on("close", () => hostDrop(conn.peer));
+    conn.on("error", () => hostDrop(conn.peer));
+  });
+  peer.on("disconnected", () => { if (H.peer === peer && !peer.destroyed) { try { peer.reconnect(); } catch (e) {} } });
+  peer.on("error", (err) => {
+    if (H.peer !== peer) return;
+    if (!H.opened) {
+      if (err && err.type === "unavailable-id" && H.tries < 6) {
+        H.tries++;
+        try { peer.destroy(); } catch (e) {}
+        hostCreate();
+        render();
+        return;
+      }
+      failHome(netMessage(err, "Não deu pra criar a sala. Tenta de novo."));
+    } else {
+      console.warn("[host]", err && err.type, err);
+    }
+  });
+}
+
+function hostOnData(conn, d) {
+  if (!d || typeof d !== "object") return;
+  const id = conn.peer;
+  H.lastSeen.set(id, Date.now());
+  if (!H.conns.has(id)) H.conns.set(id, conn);
+  if (d.type === "join") {
+    if (H.players.some((p) => p.id === id)) { send(conn, { type: "state", s: hostPublic() }); return; }
+    let name = String(d.name || "").replace(/\s+/g, " ").trim().slice(0, 20) || "Sem nome";
+    H.players.push({ id, name: uniqueName(name), host: false });
+    hostBroadcast();
+  } else if (d.type === "vote") {
+    hostVote(id, d.v);
+  }
+  // "ping" só atualiza lastSeen
+}
+
+function hostVote(id, v) {
+  if (H.phase !== "vote") return;
+  if (typeof v !== "boolean") return;
+  if (!H.players.some((p) => p.id === id)) return;
+  H.votes.set(id, v);
+  hostBroadcast();
+}
+
+function hostDrop(id) {
+  const c = H.conns.get(id);
+  H.conns.delete(id);
+  H.lastSeen.delete(id);
+  if (c) { try { c.close(); } catch (e) {} }
+  const before = H.players.length;
+  H.players = H.players.filter((p) => p.id !== id || p.host);
+  H.votes.delete(id);
+  if (H.players.length !== before) hostBroadcast();
+}
+
+function hostTick() {
+  const now = Date.now();
+  for (const [id, c] of H.conns) {
+    if (now - (H.lastSeen.get(id) || 0) > SILENCE_LIMIT) { hostDrop(id); continue; }
+    send(c, { type: "ping" });
+  }
+}
+
+function hostStart() {
+  if (H.players.length < 2) return;
+  H.order = shuffle(DECK.length).slice(0, Math.min(H.size, DECK.length));
+  H.i = 0; H.r++;
+  H.votes.clear(); H.reveal = null;
+  H.phase = "vote";
+  hostBroadcast();
+}
+function hostReveal() {
+  if (H.phase !== "vote") return;
+  const card = DECK[H.order[H.i]];
+  let pode = 0, nao = 0;
+  for (const p of H.players) {
+    if (!H.votes.has(p.id)) continue;
+    if (H.votes.get(p.id)) pode++; else nao++;
+  }
+  H.reveal = { a: card.a === null ? null : !!card.a, exp: card.exp, ref: card.ref, conversa: card.conversa, pode, nao };
+  if (card.tag) H.reveal.tag = card.tag;
+  H.phase = "reveal";
+  hostBroadcast();
+}
+function hostNext() {
+  if (H.phase !== "reveal") return;
+  H.votes.clear(); H.reveal = null;
+  if (H.i + 1 >= H.order.length) { H.phase = "end"; }
+  else { H.i++; H.phase = "vote"; }
+  hostBroadcast();
+}
+
+/* =====================================================================
+   JOGADOR
+   ===================================================================== */
+const P = { peer: null, conn: null, joined: false, timeout: null, timer: null, lastSeen: 0 };
+
+function playerJoin() {
+  ui.isHost = false;
+  const code = ui.code;
+  const peer = new Peer();
+  P.peer = peer;
+  P.joined = false;
+  clearTimeout(P.timeout);
+  P.timeout = setTimeout(() => {
+    if (!P.joined) failHome("A sala não respondeu. Confere o código e a internet.", "codigo");
+  }, JOIN_TIMEOUT);
+
+  peer.on("open", (id) => {
+    if (P.peer !== peer) return;
+    ui.myId = id;
+    const conn = peer.connect(PEER_PREFIX + code, { reliable: true });
+    P.conn = conn;
+    conn.on("open", () => send(conn, { type: "join", name: ui.name }));
+    conn.on("data", (d) => playerOnData(conn, d));
+    conn.on("close", () => playerLost(conn));
+    conn.on("error", () => playerLost(conn));
+  });
+  peer.on("disconnected", () => { if (P.peer === peer && !peer.destroyed) { try { peer.reconnect(); } catch (e) {} } });
+  peer.on("error", (err) => {
+    if (P.peer !== peer) return;
+    if (err && err.type === "peer-unavailable") {
+      if (!P.joined) failHome("Sala não encontrada. Confere o código.", "codigo");
+      else playerLost(P.conn);
+      return;
+    }
+    if (!P.joined) failHome(netMessage(err, "Não deu pra entrar na sala. Tenta de novo."));
+    else console.warn("[jogador]", err && err.type, err);
+  });
+}
+
+function playerOnData(conn, d) {
+  if (conn !== P.conn || !d || typeof d !== "object") return;
+  P.lastSeen = Date.now();
+  if (d.type === "state" && d.s && typeof d.s === "object") {
+    if (!P.joined) {
+      P.joined = true;
+      clearTimeout(P.timeout);
+      requestWake();
+      clearInterval(P.timer);
+      P.timer = setInterval(() => {
+        if (Date.now() - P.lastSeen > SILENCE_LIMIT) { playerLost(P.conn); return; }
+        send(P.conn, { type: "ping" });
+      }, PING_EVERY);
+    }
+    applyState(d.s);
+  }
+}
+
+function playerLost(conn) {
+  if (conn && conn !== P.conn) return;
+  if (P.joined) failHome("A conexão com a sala caiu (o líder pode ter saído).");
+  else failHome("Não deu pra entrar na sala. Confere o código.", "codigo");
+}
+
+function castVote(v) {
+  const s = ui.s;
+  if (!s || s.phase !== "vote") return;
+  ui.myVote = v;
+  if (ui.isHost) hostVote(ui.myId, v);
+  else { send(P.conn, { type: "vote", v }); updateScreen(); }
+}
+
+/* =====================================================================
+   Comum
+   ===================================================================== */
+function netMessage(err, fallback) {
+  const t = err && err.type;
+  if (t === "browser-incompatible") return "Esse navegador não suporta o jogo. Tenta pelo Chrome ou Safari atualizado.";
+  if (t === "network" || t === "server-error" || t === "socket-error" || t === "socket-closed") return "Sem conexão com o servidor. Confere a internet e tenta de novo.";
+  return fallback;
+}
+
+function teardown() {
+  clearTimeout(P.timeout); clearInterval(P.timer);
+  clearTimeout(H.openTimer); clearInterval(H.timer);
+  const pp = P.peer, hp = H.peer;
+  P.peer = null; P.conn = null; P.joined = false;
+  H.peer = null; H.opened = false; H.tries = 0;
+  H.conns.clear(); H.lastSeen.clear(); H.players = []; H.votes.clear(); H.reveal = null; H.phase = "lobby";
+  try { pp && pp.destroy(); } catch (e) {}
+  try { hp && hp.destroy(); } catch (e) {}
+  if (wakeLock) { try { wakeLock.release(); } catch (e) {} }
+  wakeLock = null; wantWake = false;
+  ui.s = null; ui.myVote = null; ui.voteKey = null; ui.myId = null;
+}
+
+function failHome(msg, field = "") {
+  teardown();
+  ui.screen = "home";
+  if (ui.isHost) ui.code = HAS_PRESET ? PRESET : "";
+  ui.isHost = false;
+  ui.err = msg; ui.errField = field;
+  render();
+}
+
+function applyState(s) {
+  const key = `${s.r}-${s.i}`;
+  if (key !== ui.voteKey) { ui.voteKey = key; ui.myVote = null; }
+  if (s.phase !== "vote") ui.myVote = null;
+  ui.s = s;
+  ui.screen = "game";
+  render();
+}
+
+window.addEventListener("pagehide", () => {
+  try { H.peer && H.peer.destroy(); } catch (e) {}
+  try { P.peer && P.peer.destroy(); } catch (e) {}
+});
+
+/* =====================================================================
+   Ações da tela inicial
+   ===================================================================== */
+function readHome() {
+  ui.name = ($("#nome")?.value || "").replace(/\s+/g, " ").trim().slice(0, 20);
+  ui.code = cleanCode($("#codigo")?.value);
+}
+function setErr(msg, field = "") { ui.err = msg; ui.errField = field; updateScreen(); }
+
+async function startConnecting(kind) {
+  readHome();
+  if (!ui.name) return setErr("Coloca seu nome primeiro.", "nome");
+  if (kind === "join" && !CODE_RE.test(ui.code)) {
+    return setErr(ui.code.length < 4 ? "O código tem 4 letras." : "Código inválido. Confere com o líder.", "codigo");
+  }
+  store("pon-nome", ui.name);
+  ui.err = ""; ui.errField = "";
+  ui.isHost = kind === "host";
+  ui.screen = "connecting";
+  ui.connectMsg = "";
+  render();
+  const ok = await peerReady;
+  if (ui.screen !== "connecting") return;
+  if (!ok) return failHome("Não deu pra carregar a conexão do jogo. Confere a internet e recarrega a página.");
+  try {
+    if (kind === "host") hostCreate(); else playerJoin();
+  } catch (e) {
+    return failHome("Não deu pra conectar. Tenta de novo.");
+  }
+  render();
+}
+
+/* =====================================================================
+   Renderização
+   ===================================================================== */
+const app = $("#app");
+
+function screenName() { return ui.screen === "game" && ui.s ? ui.s.phase : ui.screen; }
+function screenKey() {
+  const n = screenName();
+  if (n === "home") return "home";
+  if (n === "connecting") return `connecting|${ui.isHost}|${ui.code}`;
+  return `${n}|${ui.isHost}|${ui.s.r}|${ui.s.i}`;
+}
+
+/* =====================================================================
+   Versículos: toca na referência e abre o texto (Almeida, domínio público)
+   ===================================================================== */
+const BOOKS = {
+  "Gn":["GEN","Gênesis"], "Êx":["EXO","Êxodo"], "Ex":["EXO","Êxodo"], "Lv":["LEV","Levítico"], "Nm":["NUM","Números"], "Dt":["DEU","Deuteronômio"],
+  "Js":["JOS","Josué"], "Jz":["JDG","Juízes"], "Rt":["RUT","Rute"], "1Sm":["1SA","1 Samuel"], "2Sm":["2SA","2 Samuel"], "1Rs":["1KI","1 Reis"], "2Rs":["2KI","2 Reis"],
+  "Ne":["NEH","Neemias"], "Et":["EST","Ester"], "Jó":["JOB","Jó"], "Sl":["PSA","Salmo"], "Pv":["PRO","Provérbios"], "Ec":["ECC","Eclesiastes"], "Ct":["SNG","Cânticos"],
+  "Is":["ISA","Isaías"], "Jr":["JER","Jeremias"], "Lm":["LAM","Lamentações"], "Ez":["EZK","Ezequiel"], "Dn":["DAN","Daniel"], "Os":["HOS","Oseias"], "Am":["AMO","Amós"],
+  "Jn":["JON","Jonas"], "Mq":["MIC","Miqueias"], "Hc":["HAB","Habacuque"], "Ml":["MAL","Malaquias"],
+  "Mt":["MAT","Mateus"], "Mc":["MRK","Marcos"], "Lc":["LUK","Lucas"], "Jo":["JHN","João"], "At":["ACT","Atos"], "Rm":["ROM","Romanos"],
+  "1Co":["1CO","1 Coríntios"], "2Co":["2CO","2 Coríntios"], "Gl":["GAL","Gálatas"], "Ef":["EPH","Efésios"], "Fp":["PHP","Filipenses"], "Cl":["COL","Colossenses"],
+  "1Ts":["1TH","1 Tessalonicenses"], "2Ts":["2TH","2 Tessalonicenses"], "1Tm":["1TI","1 Timóteo"], "2Tm":["2TI","2 Timóteo"], "Tt":["TIT","Tito"], "Fm":["PHM","Filemom"],
+  "Hb":["HEB","Hebreus"], "Tg":["JAS","Tiago"], "1Pe":["1PE","1 Pedro"], "2Pe":["2PE","2 Pedro"], "1Jo":["1JN","1 João"], "2Jo":["2JN","2 João"], "3Jo":["3JN","3 João"],
+  "Jd":["JUD","Judas"], "Ap":["REV","Apocalipse"],
+};
+const ONE_CHAPTER = new Set(["OBA", "PHM", "2JN", "3JN", "JUD"]);
+
+function parseRef(txt) {
+  const m = String(txt).trim().match(/^(\d?\s?\S+?)\s*(\d+)(?::([\d,\-\s]+))?$/);
+  if (!m) return null;
+  const book = BOOKS[m[1].replace(/\s/g, "")];
+  if (!book) return null;
+  let chap = Number(m[2]), spec = m[3] ? m[3].replace(/\s/g, "") : "";
+  if (!spec && ONE_CHAPTER.has(book[0])) { spec = String(chap); chap = 1; }
+  let verses = null;
+  if (spec) {
+    verses = new Set();
+    for (const part of spec.split(",")) {
+      const [a, b] = part.split("-").map(Number);
+      for (let v = a; v <= (b || a); v++) verses.add(v);
+    }
+  }
+  const first = spec ? spec.split(",")[0] : "";
+  return {
+    txt, usfm: book[0], chap, verses,
+    title: `${book[1]} ${m[2]}${m[3] ? ":" + m[3] : ""}`,
+    nvi: `https://www.bible.com/bible/129/${book[0]}.${chap}${first ? "." + first : ""}.NVI`,
+  };
+}
+
+const chapterCache = new Map();
+function fetchChapter(usfm, chap) {
+  const k = `${usfm}/${chap}`;
+  if (!chapterCache.has(k)) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 12000);
+    const get = () => fetch(`https://bible-api.com/data/almeida/${k}`, { signal: ctrl.signal })
+      .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    const p = get()
+      .catch((e) => { if (ctrl.signal.aborted) throw e; return new Promise((ok) => setTimeout(ok, 2500)).then(get); })
+      .then((j) => j.verses || [])
+      .finally(() => clearTimeout(t));
+    p.catch(() => chapterCache.delete(k));
+    chapterCache.set(k, p);
+  }
+  return chapterCache.get(k);
+}
+
+const vs = { refs: [], k: 0, seq: 0 };
+const vsheet = $("#vsheet");
+
+function openVerses(k) {
+  const raw = String((ui.s && ui.s.reveal && ui.s.reveal.ref) || "").split("·").map((x) => x.trim()).filter(Boolean);
+  vs.refs = raw.map((x) => parseRef(x) || { txt: x, title: x, bad: true, nvi: `https://www.bible.com/pt/search/bible?q=${encodeURIComponent(x)}` });
+  if (!vs.refs.length) return;
+  $("#vtabs").innerHTML = vs.refs.length > 1
+    ? vs.refs.map((r, i) => `<button type="button" role="tab" data-tab="${i}" aria-selected="false">${esc(r.txt)}</button>`).join("")
+    : "";
+  $("#vtabs").hidden = vs.refs.length < 2;
+  showVerse(k);
+  if (!vsheet.open) { try { vsheet.showModal(); } catch (e) { vsheet.setAttribute("open", ""); } }
+}
+
+async function showVerse(k) {
+  vs.k = Math.max(0, Math.min(k, vs.refs.length - 1));
+  const r = vs.refs[vs.k], seq = ++vs.seq;
+  $("#vtitle").textContent = r.title.toUpperCase();
+  $("#vlink").href = r.nvi;
+  for (const b of document.querySelectorAll("#vtabs [data-tab]")) {
+    const on = Number(b.dataset.tab) === vs.k;
+    b.setAttribute("aria-selected", String(on));
+    if (on) b.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+  const body = $("#vbody");
+  body.scrollTop = 0;
+  if (r.bad) { body.innerHTML = `<p class="msg">Não reconheci essa referência. Toca em "Ler na NVI" pra procurar.</p>`; return; }
+  body.innerHTML = `<p class="msg">Abrindo a Bíblia…</p>`;
+  try {
+    const all = await fetchChapter(r.usfm, r.chap);
+    if (seq !== vs.seq) return;
+    const list = all.filter((v) => !r.verses || r.verses.has(v.verse));
+    if (!list.length) throw new Error("vazio");
+    let prev = null, html = "";
+    for (const v of list) {
+      if (prev !== null && v.verse !== prev + 1) html += `<p class="msg" aria-hidden="true">…</p>`;
+      html += `<p><sup>${v.verse}</sup>${esc(String(v.text).replace(/\s+/g, " ").trim())}</p>`;
+      prev = v.verse;
+    }
+    body.innerHTML = html;
+  } catch (e) {
+    if (seq !== vs.seq) return;
+    body.innerHTML = `<p class="msg">Não deu pra carregar o texto agora (sem internet?). Toca em "Ler na NVI" pra abrir no app da Bíblia.</p>`;
+  }
+}
+
+function closeVerses() { if (vsheet.open) { try { vsheet.close(); } catch (e) { vsheet.removeAttribute("open"); } } }
+
+vsheet.addEventListener("click", (e) => {
+  if (e.target === vsheet || e.target.closest("[data-close]")) return closeVerses();
+  const tab = e.target.closest("[data-tab]");
+  if (tab) showVerse(Number(tab.dataset.tab));
+});
+vsheet.addEventListener("keydown", (e) => {
+  if (vs.refs.length < 2 || !e.target.closest("[data-tab]")) return;
+  if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    e.preventDefault();
+    showVerse((vs.k + (e.key === "ArrowRight" ? 1 : vs.refs.length - 1)) % vs.refs.length);
+    document.querySelector(`#vtabs [data-tab="${vs.k}"]`).focus();
+  }
+});
+
+function render() {
+  const key = screenKey();
+  if (key !== lastKey) {
+    const prev = lastKey;
+    lastKey = key;
+    closeVerses();
+    const n = screenName();
+    app.innerHTML = BUILD[n]();
+    AFTER[n] && AFTER[n](prev);
+    window.scrollTo(0, 0);
+  }
+  updateScreen();
+}
+function updateScreen() { const n = screenName(); UPDATE[n] && UPDATE[n](); }
+
+function playersOf(s) { return s ? s.players : []; }
+function chip(p) {
+  const me = p.id === ui.myId;
+  return `<span class="chip${p.host ? " host" : ""}${me ? " me" : ""}">${p.host ? I.crown() : ""}<span class="nm">${esc(p.name)}${me ? " (você)" : ""}</span></span>`;
+}
+function vchip(p) {
+  const me = p.id === ui.myId;
+  if (p.voted) return `<span class="vchip${me ? " me" : ""}">${I.voted}<span class="nm">${esc(p.name)}${me ? " (você)" : ""}</span></span>`;
+  return `<span class="vchip wait${me ? " me" : ""}">${I.waiting(me ? "#F5E52E" : "#B9C6FF")}<span class="nm">${esc(p.name)}${me ? " (você)" : ""}</span></span>`;
+}
+function topCount(s) {
+  return `<span class="top-count" aria-label="Carta ${s.i + 1} de ${s.total}">CARTA ${s.i + 1} <span>DE ${s.total}</span></span>`;
+}
+function progress(s) {
+  return `<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="${s.total}" aria-valuenow="${s.i + 1}" aria-label="Progresso do baralho"><i style="width:${((s.i + 1) / s.total) * 100}%"></i></div>`;
+}
+// Uma frase pra puxar o debate, conforme o jeito que a célula votou
+function spark(r) {
+  const tot = r.pode + r.nao;
+  const certos = r.a ? r.pode : r.nao;
+  let msg;
+  if (r.a === null) msg = tot === 0 ? "Essa divide até cristão maduro. Bora ouvir os dois lados?" : "Essa divide até cristão maduro. Cada lado defende seu voto, com a Bíblia na mão!";
+  else if (tot === 0) msg = "Ninguém votou nessa. Bora ouvir o que cada um teria votado?";
+  else if (certos === 0) msg = "A célula inteira votou contra a resposta! Por que será que parece tão certo o outro lado?";
+  else if (certos === tot) msg = tot === 1 ? "Na teoria tá fácil. E na prática, alguém tropeça nessa?" : "Unanimidade! Mas na prática, quem aqui vive isso sem tropeçar?";
+  else if (certos * 2 < tot) msg = "A maioria foi pro outro lado. Quem votou diferente, defende seu voto!";
+  else msg = "Deu divergência! Quem votou diferente da resposta, conta o porquê.";
+  return `<div class="spark">${I.bubble("#F5E52E", 20)}<span>${esc(msg)}</span></div>`;
+}
+function roomLink(code) { return `${location.origin}${location.pathname}?sala=${code}`; }
+
+const BUILD = {
+  home() {
+    return `<main class="screen">
+      ${mascot("ovelha", "width:104px;height:104px;right:-18px;top:118px;transform:rotate(14deg)")}
+      ${mascot("peixe", "width:84px;height:84px;right:22px;top:300px;transform:rotate(-10deg)", "opt")}
+      <header class="top">${brand()}<span class="top-meta">CÉLULA</span></header>
+      <h1 class="title" aria-label="Pode ou não pode?"><span>PODE</span><span class="ou">OU</span><span>NÃO</span><span>PODE?</span></h1>
+      <p class="sub">Situações do dia a dia, voto da galera e o que a Bíblia diz.</p>
+      <form class="card form" id="joinForm" novalidate>
+        <label for="nome">SEU NOME</label>
+        <input id="nome" class="field" maxlength="20" autocomplete="nickname" enterkeyhint="next" placeholder="Como a galera te chama?" value="${esc(ui.name)}">
+        <label for="codigo" class="l2">ENTRAR NUMA SALA</label>
+        <div class="code-row">
+          <input id="codigo" class="field" maxlength="4" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="ABCD" aria-label="Código da sala, 4 letras" value="${esc(ui.code)}">
+          <button class="btn btn-dark" type="submit">ENTRAR</button>
+        </div>
+        <div id="err" class="err" role="alert" aria-live="assertive"></div>
+      </form>
+      ${HAS_PRESET ? "" : `<div class="divider" aria-hidden="true"><i></i>OU<i></i></div>
+      <button class="btn btn-sec" type="button" data-act="create">CRIAR SALA (SOU O LÍDER)</button>`}
+    </main>`;
+  },
+
+  connecting() {
+    return `<main class="screen">
+      ${mascot("pao", "width:92px;height:92px;left:-20px;bottom:120px;transform:rotate(-16deg)")}
+      <header class="top">${brand()}</header>
+      <div class="center">
+        <div class="spin-wrap"><div class="under"></div>${backCard("spin")}</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+          <h1 class="big-label" style="margin:0">${ui.isHost ? "CRIANDO A SALA" : "ENTRANDO NA SALA"}</h1>
+          ${ui.code && !ui.isHost ? codeCards(ui.code, "sm") : ""}
+          <div class="dots" role="status" style="margin-top:8px"><span>Embaralhando as cartas</span><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <p class="foot">Se demorar mais de 12 segundos, a gente avisa.</p>
+    </main>`;
+  },
+
+  lobby() {
+    const s = ui.s;
+    if (ui.isHost) {
+      const link = roomLink(s.code);
+      const shown = `${location.host}${location.pathname.replace(/\/$/, "")}`;
+      return `<main class="screen">
+        <header class="top">${brand()}<span class="badge">${I.crown(14, false)}LÍDER</span></header>
+        <div class="code-block">
+          <div>
+            <span class="label-sm">CÓDIGO DA SALA</span>
+            <div aria-label="Código ${esc(s.code.split("").join(" "))}" role="img">${codeCards(s.code)}</div>
+          </div>
+          <svg class="opt" viewBox="0 0 64 64" style="width:72px;height:72px;margin-right:-6px;transform:rotate(10deg)" aria-hidden="true"><use href="#m-peixe"/></svg>
+        </div>
+        <section class="card qr-card">
+          <div class="qr" id="qr" role="img" aria-label="QR code da sala ${esc(s.code)}"></div>
+          <div class="qr-txt">
+            <b>APONTA A CÂMERA</b>
+            <span>Ou abre o link e o código já vem preenchido:</span>
+            <a href="${esc(link)}" target="_blank" rel="noopener">${esc(shown)}<br>/?sala=${esc(s.code)}</a>
+          </div>
+        </section>
+        <div class="row-between" style="margin-top:24px"><span class="label">CARTAS NA RODADA</span><span class="muted">${DECK.length} no baralho</span></div>
+        <div class="seg" style="grid-template-columns:repeat(${sizeOptions().length},minmax(0,1fr))" role="group" aria-label="Quantas cartas nesta rodada">
+          ${sizeOptions().map((n) => `<button type="button" data-act="size" data-n="${n}" aria-pressed="false">${n === DECK.length ? "TODAS" : n}</button>`).join("")}
+        </div>
+        <div class="row-between" style="margin-top:22px"><span class="label">NA MESA</span><span class="muted" id="count"></span></div>
+        <div class="chips" id="chips" style="margin-top:12px"></div>
+        <div class="push" style="padding-top:24px;display:flex;flex-direction:column;gap:14px">
+          <div class="tip">${I.phone}<span>Deixe esta tela aberta. Se ela fechar, a sala cai.</span></div>
+          <button class="btn btn-dark btn-big" type="button" data-act="start" id="start">COMEÇAR</button>
+          <p class="hint" id="startHint"></p>
+        </div>
+      </main>`;
+    }
+    return `<main class="screen">
+      ${mascot("uva", "width:80px;height:80px;left:-16px;top:150px;transform:rotate(18deg)")}
+      ${mascot("ovelha", "width:96px;height:96px;right:-22px;top:300px;transform:rotate(-18deg)")}
+      <header class="top">${brand()}<span class="code-xs" aria-label="Sala ${esc(s.code)}">SALA ${codeCards(s.code, "")}</span></header>
+      <div style="margin-top:44px;display:flex;justify-content:center">
+        <div class="stack3" aria-hidden="true">${backCard("b1")}${backCard("b2")}${backCard("b3")}</div>
+      </div>
+      <div style="margin-top:40px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+        <h1 class="big-label" style="margin:0;letter-spacing:.1em">VOCÊ TÁ NA MESA</h1>
+        <div class="dots" style="font-size:16px"><span>Esperando o líder começar</span><i></i><i></i><i></i></div>
+      </div>
+      <div class="push" style="padding-top:28px;display:flex;flex-direction:column;gap:12px">
+        <div class="row-between"><span class="label">NA MESA</span><span class="muted" id="count"></span></div>
+        <div class="chips" id="chips"></div>
+      </div>
+    </main>`;
+  },
+
+  vote() {
+    const s = ui.s;
+    const pet = MASCOTS[s.i % MASCOTS.length];
+    return `<main class="screen">
+      <header class="top">${brand()}${topCount(s)}</header>
+      ${progress(s)}
+      <div class="deck">
+        <div class="s1" aria-hidden="true"></div><div class="s2" aria-hidden="true"></div>
+        <article class="card qcard deal" aria-labelledby="qtext">
+          <div class="qhead"><span class="qnum">SITUAÇÃO ${pad2(s.i + 1)}</span>${eagle("ink")}</div>
+          <p class="qtext" id="qtext">${esc(s.q)}</p>
+          ${mascot(pet, "")}
+        </article>
+      </div>
+      <section class="votes" aria-label="Quem já votou">
+        <div class="row-between"><span class="label" id="votecount"></span><span class="note">ninguém vê o seu voto</span></div>
+        <div class="chips" id="chips" style="gap:6px"></div>
+      </section>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+      <div class="hand-row" role="group" aria-label="Seu voto">
+        <button class="hand p" type="button" data-act="vote" data-v="1" aria-pressed="false"><span class="ic">${I.check("#34C27A")}</span><span class="tx">PODE</span></button>
+        <button class="hand n" type="button" data-act="vote" data-v="0" aria-pressed="false"><span class="ic">${I.x("#C61F32")}</span><span class="tx">NÃO PODE</span></button>
+      </div>
+      ${ui.isHost ? `<div class="vote-actions"><button class="btn btn-dark" type="button" data-act="reveal">${I.eye}REVELAR</button></div>` : ""}
+    </main>`;
+  },
+
+  reveal() {
+    const s = ui.s, r = s.reveal;
+    const kind = r.a === null ? "d" : r.a ? "p" : "n";
+    const label = r.tag ? r.tag.toUpperCase() : ({ p: "PODE", n: "NÃO PODE", d: "DEPENDE" })[kind];
+    const tot = r.pode + r.nao;
+    const pp = tot ? (r.pode / tot) * 100 : 0, pn = tot ? (r.nao / tot) * 100 : 0;
+    const refs = String(r.ref || "").split("·").map((x) => x.trim()).filter(Boolean);
+    const last = s.i + 1 >= s.total;
+    const actions = ui.isHost
+      ? `<div class="reveal-actions">
+          <button class="btn btn-dark" type="button" data-act="next">${last ? "FINALIZAR" : "PRÓXIMA CARTA"}${I.arrow}</button>
+          <p class="hint">Os outros veem: "Hora de conversar! O líder passa pra próxima."</p>
+        </div>`
+      : `<div class="talk-now">${I.bubble("#F5E52E", 22)}<span>Hora de conversar! O líder passa pra próxima.</span></div>`;
+    return `<main class="screen wide">
+      <header class="top">${brand()}${topCount(s)}</header>
+      ${progress(s)}
+      <div class="reveal-grid">
+        <article class="card rcard flip" aria-labelledby="ans">
+          <div class="banner ${kind}">
+            <span class="ic">${kind === "p" ? I.check("#34C27A", 22) : kind === "n" ? I.x("#C61F32", 22) : I.depends}</span>
+            <b id="ans" class="${label.length > 9 ? "long" : ""}">${esc(label)}</b>
+          </div>
+          <div class="rbody">
+            <div class="rq"><span class="qnum">SITUAÇÃO ${pad2(s.i + 1)}</span><span>${esc(s.q)}</span></div>
+            <p class="exp">${esc(r.exp)}</p>
+            <div class="refs" aria-label="Referências bíblicas">${I.book}${refs.map((x, k) => `<button type="button" data-act="verse" data-k="${k}" aria-haspopup="dialog">${esc(x)}</button>`).join("")}</div>
+            <p class="refs-hint">Toca no versículo pra ler o texto.</p>
+            <div class="talk"><b>${I.bubble()}PRA CONVERSAR</b><span>${esc(r.conversa)}</span></div>
+          </div>
+        </article>
+        <div class="side">
+          <section class="result" aria-label="Como a célula votou">
+            <span class="label">COMO A CÉLULA VOTOU</span>
+            <div class="bars">
+              <span class="bl">${I.check("#34C27A", 16)}PODE</span>
+              <div class="track" role="img" aria-label="${plural(r.pode, "voto", "votos")} em pode"><i class="fp grow${pp > 0 && pp < 100 ? " on" : ""}" style="width:${pp}%"></i></div>
+              <span class="num">${r.pode}</span>
+              <span class="bl">${I.x("#FFFFFF", 16)}NÃO PODE</span>
+              <div class="track" role="img" aria-label="${plural(r.nao, "voto", "votos")} em não pode"><i class="fn grow${pn > 0 && pn < 100 ? " on" : ""}" style="width:${pn}%"></i></div>
+              <span class="num">${r.nao}</span>
+            </div>
+            ${spark(r)}
+          </section>
+          ${actions}
+        </div>
+      </div>
+    </main>`;
+  },
+
+  end() {
+    const s = ui.s;
+    return `<main class="screen">
+      ${mascot("ovelha", "width:86px;height:86px;left:-18px;bottom:150px;transform:rotate(14deg)")}
+      ${mascot("uva", "width:80px;height:80px;right:-12px;bottom:170px;transform:rotate(-12deg)")}
+      <header class="top">${brand()}<span class="top-count">${s.total} <span>DE ${s.total}</span></span></header>
+      <div class="end-wrap">
+        <div class="s1" aria-hidden="true"></div><div class="s2" aria-hidden="true"></div>
+        <div class="card end-card">
+          <svg class="pet" viewBox="0 0 64 64" aria-hidden="true"><use href="#m-pomba"/></svg>
+          <h1>FIM DE<br>JOGO!</h1>
+          <span class="bar" aria-hidden="true"></span>
+          <p class="pray">Bora orar juntos?</p>
+          <p class="sum" id="endinfo"></p>
+        </div>
+      </div>
+      <div class="end-actions">
+        ${ui.isHost
+          ? `<button class="btn btn-dark" type="button" data-act="again" id="again">${I.reload}JOGAR DE NOVO</button>
+             <p class="hint" id="againHint">Reembaralha e mantém a mesma galera.</p>`
+          : `<p class="hint">Se o líder quiser, ele começa outra rodada daqui.</p>`}
+      </div>
+    </main>`;
+  },
+};
+
+const AFTER = {
+  home() {
+    const code = $("#codigo");
+    code.addEventListener("input", () => {
+      const v = cleanCode(code.value);
+      if (code.value !== v) code.value = v;
+      if (ui.errField === "codigo") setErr("");
+    });
+    $("#nome").addEventListener("input", () => { if (ui.errField === "nome") setErr(""); });
+    $("#joinForm").addEventListener("submit", (e) => { e.preventDefault(); startConnecting("join"); });
+  },
+  lobby() {
+    if (!ui.isHost) return;
+    const el = $("#qr"), code = ui.s.code;
+    qrReady.then((ok) => {
+      if (!ok || !el.isConnected) { if (el.isConnected) el.innerHTML = `<span style="font-size:12px;font-weight:600;text-align:center;color:#4A5170">QR indisponível. Usa o link.</span>`; return; }
+      el.innerHTML = "";
+      new QRCode(el, { text: roomLink(code), width: 264, height: 264, colorDark: "#0B1026", colorLight: "#FFFFFF", correctLevel: QRCode.CorrectLevel.M });
+      el.removeAttribute("title");
+    });
+  },
+};
+
+const UPDATE = {
+  home() {
+    const err = $("#err");
+    err.innerHTML = ui.err ? `${I.alert}<span>${esc(ui.err)}</span>` : "";
+    $("#nome").classList.toggle("bad", ui.errField === "nome");
+    $("#codigo").classList.toggle("bad", ui.errField === "codigo");
+    $("#nome").setAttribute("aria-invalid", ui.errField === "nome");
+    $("#codigo").setAttribute("aria-invalid", ui.errField === "codigo");
+  },
+  lobby() {
+    const ps = playersOf(ui.s);
+    $("#count").textContent = plural(ps.length, "pessoa", "pessoas");
+    $("#chips").innerHTML = ps.map(chip).join("");
+    if (ui.isHost) {
+      const ok = ps.length >= 2;
+      $("#start").disabled = !ok;
+      $("#startHint").textContent = ok ? `Dá uns ${Math.round(H.size * 1.5)} a ${H.size * 2} minutos de conversa.` : "Espera pelo menos mais uma pessoa entrar.";
+      for (const b of document.querySelectorAll("[data-act=size]")) b.setAttribute("aria-pressed", String(Number(b.dataset.n) === H.size));
+    }
+  },
+  vote() {
+    const s = ui.s, ps = playersOf(s);
+    const voted = ps.filter((p) => p.voted).length;
+    $("#votecount").textContent = `${voted} DE ${ps.length} VOTARAM`;
+    $("#chips").innerHTML = ps.map(vchip).join("");
+    const st = $("#status");
+    const has = ui.myVote !== null;
+    st.textContent = has ? "Voto registrado. Dá pra mudar até revelar." : "Vote! Dá pra mudar até revelar.";
+    st.classList.toggle("ok", has);
+    for (const b of document.querySelectorAll(".hand")) {
+      const v = b.dataset.v === "1";
+      const on = has && ui.myVote === v;
+      b.setAttribute("aria-pressed", String(on));
+      b.classList.toggle("picked", on);
+      b.classList.toggle("dim", has && !on);
+    }
+  },
+  end() {
+    const s = ui.s;
+    $("#endinfo").textContent = `${plural(s.total, "carta", "cartas")}, ${plural(s.players.length, "pessoa", "pessoas")} na mesa. Valeu, Aquila.`;
+    if (ui.isHost) {
+      const ok = s.players.length >= 2;
+      $("#again").disabled = !ok;
+      $("#againHint").textContent = ok ? "Reembaralha e mantém a mesma galera." : "Precisa de pelo menos 2 pessoas na mesa.";
+    }
+  },
+};
+
+app.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-act]");
+  if (!b || b.disabled) return;
+  const act = b.dataset.act;
+  if (act === "create") startConnecting("host");
+  else if (act === "vote") castVote(b.dataset.v === "1");
+  else if (act === "verse") openVerses(Number(b.dataset.k));
+  else if (act === "start" && ui.isHost) hostStart();
+  else if (act === "size" && ui.isHost) { H.size = Number(b.dataset.n) || 20; updateScreen(); }
+  else if (act === "reveal" && ui.isHost) hostReveal();
+  else if (act === "next" && ui.isHost) hostNext();
+  else if (act === "again" && ui.isHost) hostStart();
+});
+
+render();
+</script>
+</body>
+</html>
