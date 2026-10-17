@@ -200,6 +200,7 @@ a{color:var(--azul)}
 .hand.p.dim{transform:translateY(8px) scale(.96) rotate(-3deg)}
 .hand.n.dim{transform:translateY(8px) scale(.96) rotate(3deg)}
 .vote-actions{margin-top:auto;padding-top:28px}
+.vote-actions .btn{width:100%}
 
 /* ---------- revelação ---------- */
 .reveal-grid{display:flex;flex-direction:column}
@@ -335,271 +336,272 @@ a{color:var(--azul)}
 
 <script>
 /* =====================================================================
-   BARALHO — edite à vontade. Formato: { q, a:true|false|null, tag?, exp, ref, conversa }
+   BARALHO — edite à vontade. Formato: { q, heat:1|2|3, a:true|false|null, tag?, exp, ref, conversa }
+   heat = quanto a carta racha a roda (3 = muito polêmica, sai mais vezes; 1 = mais tranquila)
    a:true = PODE (verde) · a:false = NÃO PODE (vermelho) · a:null = DEPENDE (amarelo, pra temas em que cristãos sinceros divergem)
    ===================================================================== */
 const DECK = [
-  { q:"Contar uma mentirinha pra não magoar alguém.", a:false,
+  { q:"Contar uma mentirinha pra não magoar alguém.", heat:3, a:false,
     exp:"A Bíblia pede verdade com amor. Dá pra ser gentil e cuidadoso sem inventar nada: escolher bem as palavras não é o mesmo que mentir.",
     ref:"Ef 4:15,25 · Cl 3:9",
     conversa:"Quando foi a última vez que você achou mais fácil mentir do que falar a verdade com jeito?" },
-  { q:"Ficar com raiva de alguém.", a:true, tag:"Pode (sem pecar)",
+  { q:"Ficar com raiva de alguém.", heat:2, a:true, tag:"Pode (sem pecar)",
     exp:"Sentir raiva não é pecado em si. O problema é o que a gente faz com ela e deixar ela durar até virar mágoa.",
     ref:"Ef 4:26-27",
     conversa:"O que te ajuda a esfriar a cabeça antes de agir com raiva?" },
-  { q:"Não perdoar alguém, mas também não fazer nada contra a pessoa.", a:false,
+  { q:"Não perdoar alguém, mas também não fazer nada contra a pessoa.", heat:2, a:false,
     exp:"Rancor em silêncio continua sendo falta de perdão. Perdoar é soltar a dívida, não só evitar a vingança.",
     ref:"Mt 6:14-15 · Cl 3:13",
     conversa:"Qual a diferença entre perdoar e confiar de novo na pessoa?" },
-  { q:"Pagar imposto mesmo achando o governo corrupto.", a:true, tag:"Pode (e deve)",
+  { q:"Pagar imposto mesmo achando o governo corrupto.", heat:2, a:true, tag:"Pode (e deve)",
     exp:"Jesus e Paulo mandaram pagar impostos sob o Império Romano, que estava longe de ser justo. Cumprir o dever não é apoiar o erro.",
     ref:"Mt 22:21 · Rm 13:6-7",
     conversa:"Onde mais a gente deixa de fazer o certo porque \"o sistema também não faz\"?" },
-  { q:"Comentar os defeitos de alguém pelas costas, mesmo sendo tudo verdade.", a:false,
+  { q:"Comentar os defeitos de alguém pelas costas, mesmo sendo tudo verdade.", heat:2, a:false,
     exp:"Ser verdade não transforma fofoca em coisa boa. Se não edifica e a pessoa não está ali pra se defender, não é conversa, é fofoca.",
     ref:"Pv 16:28 · Tg 4:11 · Ef 4:29",
     conversa:"Como sair de uma roda de fofoca sem ficar chato?" },
-  { q:"Questionar Deus e desabafar com Ele quando a vida tá difícil.", a:true,
+  { q:"Questionar Deus e desabafar com Ele quando a vida tá difícil.", heat:2, a:true,
     exp:"Os Salmos estão cheios de perguntas sinceras pra Deus, e o próprio Jesus clamou na cruz usando um deles. Desabafar com Deus também é fé.",
     ref:"Sl 13 · Sl 22:1 · Mt 27:46",
     conversa:"Você se sente à vontade pra ser sincero com Deus quando tá mal?" },
-  { q:"Levar umas canetas e folhas da empresa pra casa.", a:false,
+  { q:"Levar umas canetas e folhas da empresa pra casa.", heat:2, a:false,
     exp:"Pegar o que não é seu é roubo, seja uma caneta ou um notebook. Quem é fiel no pouco aprende a ser fiel no muito, e isso vale mesmo quando ninguém tá olhando.",
     ref:"Ef 4:28 · Lc 16:10",
     conversa:"Em que situação a gente costuma achar que \"coisa pequena não conta\"?" },
-  { q:"Ficar com o troco que o caixa te deu a mais.", a:false,
+  { q:"Ficar com o troco que o caixa te deu a mais.", heat:1, a:false,
     exp:"Honestidade vale mesmo quando o erro foi do outro. Aquele dinheiro vai fazer falta pra alguém no fim do dia.",
     ref:"Pv 11:1 · Pv 20:23",
     conversa:"Já devolveu algo que ninguém ia perceber? Como foi?" },
-  { q:"Ajudar alguém que te fez mal.", a:true, tag:"Pode (e deve)",
+  { q:"Ajudar alguém que te fez mal.", heat:1, a:true, tag:"Pode (e deve)",
     exp:"Amar o inimigo é um dos ensinos centrais de Jesus. Fazer o bem pra quem te feriu é vencer o mal com o bem.",
     ref:"Lc 6:27-28 · Rm 12:20-21",
     conversa:"O que torna tão difícil fazer o bem pra quem te machucou?" },
-  { q:"Revidar quando alguém te ofende.", a:false,
+  { q:"Revidar quando alguém te ofende.", heat:1, a:false,
     exp:"A vingança pertence a Deus. Dá pra se posicionar e colocar limite sem devolver na mesma moeda.",
     ref:"Rm 12:17-19 · Mt 5:38-39",
     conversa:"Qual a diferença entre se defender e revidar?" },
-  { q:"Comer carne de porco.", a:true,
+  { q:"Comer carne de porco.", heat:2, a:true,
     exp:"Jesus declarou todos os alimentos puros, e Pedro recebeu a mesma mensagem numa visão. Comida não aproxima nem afasta ninguém de Deus.",
     ref:"Mc 7:18-19 · At 10:15 · Cl 2:16",
     conversa:"Que regras a gente às vezes coloca acima do que importa de verdade?" },
-  { q:"Ter amizade próxima com quem não é cristão.", a:true,
+  { q:"Ter amizade próxima com quem não é cristão.", heat:3, a:true,
     exp:"Jesus andava com pecadores e era chamado de amigo deles. Só vale ficar atento a quem está influenciando quem.",
     ref:"Mc 2:15-17 · Mt 5:13-16 · 1Co 15:33",
     conversa:"Seus amigos de fora da igreja veem diferença em você?" },
-  { q:"Fazer caridade principalmente pra ser visto e elogiado.", a:false,
+  { q:"Fazer caridade principalmente pra ser visto e elogiado.", heat:2, a:false,
     exp:"Jesus disse que quem faz o bem pra aparecer já recebeu a recompensa: o aplauso. O bem que agrada a Deus não precisa de plateia.",
     ref:"Mt 6:1-4",
     conversa:"Postar uma boa ação é sempre errado? Onde fica o limite?" },
-  { q:"Colar na prova quando ninguém vai descobrir.", a:false,
+  { q:"Colar na prova quando ninguém vai descobrir.", heat:1, a:false,
     exp:"Integridade é o que a gente faz quando ninguém está vendo. Fazer tudo como pra Deus inclui a prova.",
     ref:"Pv 10:9 · Cl 3:23",
     conversa:"Em que área da sua vida é mais fácil ser uma pessoa quando ninguém tá olhando?" },
-  { q:"Tirar um dia pra descansar sem fazer nada \"produtivo\".", a:true,
+  { q:"Tirar um dia pra descansar sem fazer nada \"produtivo\".", heat:1, a:true,
     exp:"Descanso foi ideia de Deus desde a criação. Jesus também chamava os discípulos pra descansar. Parar não é preguiça.",
     ref:"Êx 20:8-10 · Mc 6:31 · Sl 127:2",
     conversa:"Você sente culpa quando descansa? Por quê?" },
-  { q:"Chorar e ficar triste mesmo tendo fé.", a:true,
+  { q:"Chorar e ficar triste mesmo tendo fé.", heat:1, a:true,
     exp:"Jesus chorou no túmulo de Lázaro, sabendo que ia ressuscitá-lo. Fé não apaga a tristeza, só muda a esperança.",
     ref:"Jo 11:35 · Rm 12:15 · 1Ts 4:13",
     conversa:"Como a gente pode chorar junto com alguém sem tentar consertar tudo?" },
-  { q:"Desrespeitar os pais porque eles \"não entendem nada\".", a:false,
+  { q:"Desrespeitar os pais porque eles \"não entendem nada\".", heat:1, a:false,
     exp:"Honrar não depende de concordar. Dá pra discordar com respeito, e esse é o único mandamento que vem com promessa.",
     ref:"Êx 20:12 · Ef 6:1-3",
     conversa:"Como honrar os pais quando a relação é difícil?" },
-  { q:"Julgar alguém pelo pecado dele achando que você é melhor.", a:false,
+  { q:"Julgar alguém pelo pecado dele achando que você é melhor.", heat:1, a:false,
     exp:"Jesus falou da trave no próprio olho e contou a história do fariseu e do publicano. Todo mundo precisa da mesma graça.",
     ref:"Mt 7:1-5 · Lc 18:9-14",
     conversa:"Que tipo de pecado dos outros você tem mais facilidade de julgar?" },
-  { q:"Ficar calado quando vê alguém sendo humilhado.", a:false,
+  { q:"Ficar calado quando vê alguém sendo humilhado.", heat:1, a:false,
     exp:"Saber o bem e não fazer também é pecado. Às vezes defender alguém é só não deixar a pessoa sozinha.",
     ref:"Pv 31:8-9 · Tg 4:17",
     conversa:"O que te impede de se posicionar nessas horas?" },
-  { q:"Dizer \"não\" a um pedido de ajuda porque você está sobrecarregado.", a:true,
+  { q:"Dizer \"não\" a um pedido de ajuda porque você está sobrecarregado.", heat:2, a:true,
     exp:"Jesus também se retirava pra descansar e orar. Ter limite não é egoísmo, desde que não vire desculpa pra nunca ajudar.",
     ref:"Lc 5:15-16 · Gl 6:2-5",
     conversa:"Como saber se o seu \"não\" é limite saudável ou só comodismo?" },
-  { q:"Baixar filme ou série pirata porque a assinatura é cara demais.", a:false,
+  { q:"Baixar filme ou série pirata porque a assinatura é cara demais.", heat:3, a:false,
     exp:"Achar caro não dá direito de pegar sem pagar. Alguém trabalhou naquilo, e pegar o fruto do trabalho alheio sem permissão continua sendo roubo, mesmo digital e mesmo que \"todo mundo faça\".",
     ref:"Êx 20:15 · Rm 13:7 · Lc 16:10",
     conversa:"Por que pirataria quase não pesa na consciência, mas roubar uma loja pesaria?" },
-  { q:"Trabalhar ou fazer prova no domingo.", a:true,
+  { q:"Trabalhar ou fazer prova no domingo.", heat:3, a:true,
     exp:"Jesus disse que o sábado foi feito pro ser humano, e não o contrário. O Novo Testamento não prende o cristão a um dia sagrado. O que continua valendo é ter ritmo de descanso e não largar a comunhão.",
     ref:"Mc 2:27 · Rm 14:5-6 · Cl 2:16",
     conversa:"Se não é o dia que importa, o que torna um tempo realmente separado pra Deus?" },
-  { q:"Dizer que tá doente pra faltar no trabalho e descansar um dia.", a:false,
+  { q:"Dizer que tá doente pra faltar no trabalho e descansar um dia.", heat:2, a:false,
     exp:"Descansar é bom e até ideia de Deus, mas conseguir isso mentindo não. Dá pra pedir folga, negociar, colocar limite. O atalho da mentira é o problema, não o descanso.",
     ref:"Pv 12:22 · Cl 3:9 · Ef 4:25",
     conversa:"Por que é tão mais fácil inventar uma desculpa do que falar \"tô esgotado\"?" },
-  { q:"Comprar algo caro só porque você quer muito.", a:true, tag:"Pode (sem virar ídolo)",
+  { q:"Comprar algo caro só porque você quer muito.", heat:3, a:true, tag:"Pode (sem virar ídolo)",
     exp:"Deus dá coisas boas pra gente desfrutar, e ter algo bom não é pecado. O problema começa quando aquilo vira segurança, status ou dono do seu coração, e quando sobra pra você e nunca sobra pra ninguém.",
     ref:"1Tm 6:17-19 · Ec 5:19 · Mt 6:19-21",
     conversa:"Como saber se uma coisa que você quer já virou ídolo?" },
-  { q:"Orar pedindo coisas pra você mesmo, tipo um emprego ou um carro.", a:true,
+  { q:"Orar pedindo coisas pra você mesmo, tipo um emprego ou um carro.", heat:1, a:true,
     exp:"Jesus mandou pedir, buscar e bater, e Paulo diz pra apresentar tudo a Deus. Pedir não é egoísmo. O que Tiago critica é pedir com motivo errado, só pra esbanjar.",
     ref:"Fp 4:6 · Mt 7:7-11 · Tg 4:3",
     conversa:"Você ora mais pedindo ou agradecendo? E quando a resposta é \"não\"?" },
-  { q:"Parar de ir pra igreja porque dá pra ter fé sozinho em casa.", a:false,
+  { q:"Parar de ir pra igreja porque dá pra ter fé sozinho em casa.", heat:3, a:false,
     exp:"Fé cristã nunca foi carreira solo. A Bíblia compara a igreja a um corpo: nenhuma parte sobrevive desligada das outras. Dá pra ter fé em casa, mas a gente foi feito pra crescer junto.",
     ref:"Hb 10:24-25 · At 2:42 · 1Co 12:21",
     conversa:"O que a comunidade te dá que você não consegue sozinho? E o que você dá pra ela?" },
-  { q:"Falar palavrão numa roda onde ninguém liga.", a:false,
+  { q:"Falar palavrão numa roda onde ninguém liga.", heat:3, a:false,
     exp:"A Bíblia pede que da nossa boca saia o que edifica, e não palavra torpe. Não é sobre ofender alguém ali: é sobre o que a nossa fala revela e forma em nós.",
     ref:"Ef 4:29 · Cl 3:8 · Tg 3:10",
     conversa:"Palavrão é pior que uma fala educada mas cheia de veneno? Onde fica o limite?" },
-  { q:"Mandar no grupo o print de uma conversa privada de alguém.", a:false,
+  { q:"Mandar no grupo o print de uma conversa privada de alguém.", heat:1, a:false,
     exp:"Quem espalha o que foi dito em confiança trai a pessoa. Mesmo que seja engraçado ou verdade, expor alguém sem ela saber não é amar o próximo como a si mesmo.",
     ref:"Pv 11:13 · Pv 17:9 · Mt 7:12",
     conversa:"Você gostaria que o seu histórico de conversa fosse parar num grupo?" },
-  { q:"Questionar o que o pastor ensinou e conferir na Bíblia.", a:true, tag:"Pode (e deve)",
+  { q:"Questionar o que o pastor ensinou e conferir na Bíblia.", heat:3, a:true, tag:"Pode (e deve)",
     exp:"Os bereanos foram elogiados justamente por conferir nas Escrituras o que Paulo pregava. Examinar tudo e reter o que é bom é sinal de maturidade, não de rebeldia, desde que com respeito.",
     ref:"At 17:11 · 1Ts 5:21 · 1Jo 4:1",
     conversa:"Qual a diferença entre questionar com humildade e desconfiar de tudo?" },
-  { q:"Sentir inveja do sucesso de um amigo, mesmo sem fazer nada contra ele.", a:false,
+  { q:"Sentir inveja do sucesso de um amigo, mesmo sem fazer nada contra ele.", heat:2, a:false,
     exp:"A cobiça já está nos Dez Mandamentos, e ela acontece por dentro. Sentir a pontada é humano, mas alimentar a inveja não dá. O caminho é levar pra Deus e aprender a comemorar com quem comemora.",
     ref:"Êx 20:17 · Tg 3:16 · Rm 12:15",
     conversa:"De quem é mais difícil comemorar uma vitória: de um estranho ou de um amigo próximo?" },
-  { q:"Desobedecer o governo quando ele manda negar a fé.", a:true, tag:"Pode (e deve)",
+  { q:"Desobedecer o governo quando ele manda negar a fé.", heat:3, a:true, tag:"Pode (e deve)",
     exp:"Pagar imposto e respeitar autoridade é o normal. Mas quando a ordem é contra Deus, os apóstolos responderam que importa obedecer antes a Deus. Daniel e os amigos dele fizeram o mesmo, aceitando as consequências.",
     ref:"At 5:29 · Dn 3:16-18 · Dn 6:10",
     conversa:"Onde fica a linha entre \"respeitar a autoridade\" e \"obedecer a Deus primeiro\" no dia a dia?" },
-  { q:"Chamar a atenção de um amigo cristão que tá vivendo em pecado.", a:true, tag:"Pode (com amor)",
+  { q:"Chamar a atenção de um amigo cristão que tá vivendo em pecado.", heat:3, a:true, tag:"Pode (com amor)",
     exp:"Jesus ensinou a ir falar direto com a pessoa, a sós. Paulo pede pra restaurar com mansidão, olhando pra si mesmo. Não julgar não é o mesmo que nunca falar nada: ferida de amigo é sinal de cuidado.",
     ref:"Mt 18:15 · Gl 6:1 · Pv 27:6",
     conversa:"Isso não contradiz a carta do \"não julgar\"? Qual a diferença na prática?" },
-  { q:"Pegar dinheiro emprestado e não devolver porque o amigo nem cobra.", a:false,
+  { q:"Pegar dinheiro emprestado e não devolver porque o amigo nem cobra.", heat:1, a:false,
     exp:"O salmo chama de injusto quem pega emprestado e não paga. O amigo não cobrar é gentileza dele, não perdão da dívida. Só fica quitado se ele mesmo disser que é presente.",
     ref:"Sl 37:21 · Rm 13:8",
     conversa:"Já deixou de cobrar alguém pra não estragar a amizade? Como foi?" },
-  { q:"Duvidar de Deus de vez em quando.", a:true,
+  { q:"Duvidar de Deus de vez em quando.", heat:3, a:true,
     exp:"João Batista, na prisão, mandou perguntar se Jesus era mesmo o Messias, e Jesus respondeu com carinho. Um pai disse \"eu creio, ajuda a minha falta de fé\" e foi atendido. Dúvida levada a Deus não é o fim da fé.",
     ref:"Mt 11:2-6 · Mc 9:24 · Jd 22",
     conversa:"Você se sente livre pra falar das suas dúvidas aqui na célula?" },
-  { q:"Dizer \"foi o inimigo\" quando você mesmo escolheu errar.", a:false,
+  { q:"Dizer \"foi o inimigo\" quando você mesmo escolheu errar.", heat:2, a:false,
     exp:"Tiago diz que cada um é tentado pelo próprio desejo. Jogar a culpa nos outros é tão antigo quanto Adão e Eva. Assumir o erro é o primeiro passo pro perdão.",
     ref:"Tg 1:14-15 · Gn 3:12-13 · 1Jo 1:9",
     conversa:"Por que é tão difícil falar só \"eu errei\", sem nenhum \"mas\"?" },
-  { q:"Pedir perdão a Deus pela mesma coisa pela quinquagésima vez.", a:true,
+  { q:"Pedir perdão a Deus pela mesma coisa pela quinquagésima vez.", heat:2, a:true,
     exp:"Se a gente confessa, Ele é fiel pra perdoar. As misericórdias dEle se renovam toda manhã, e Jesus mandou a gente perdoar setenta vezes sete. Ele não cansa de você, só não quer que você se acomode.",
     ref:"1Jo 1:9 · Lm 3:22-23 · Mt 18:21-22",
     conversa:"Pedir perdão de novo é arrependimento ou só alívio da culpa? Como saber?" },
-  { q:"Vender um celular usado sem contar o defeito que o comprador não perguntou.", a:false,
+  { q:"Vender um celular usado sem contar o defeito que o comprador não perguntou.", heat:2, a:false,
     exp:"Esconder a verdade pra levar vantagem também é desonestidade. Balança enganosa é coisa que Deus detesta. Trate o comprador como você queria ser tratado no lugar dele.",
     ref:"Pv 11:1 · Fp 2:4 · Mt 7:12",
     conversa:"Omitir é o mesmo que mentir? Em que situações você acha que não é?" },
-  { q:"Usar \"Deus me falou\" pra encerrar uma discussão.", a:false,
+  { q:"Usar \"Deus me falou\" pra encerrar uma discussão.", heat:3, a:false,
     exp:"Usar o nome de Deus como trunfo pra ganhar uma conversa é tomar o nome dEle em vão. Se veio mesmo de Deus, aguenta ser conferido com a Bíblia e com irmãos maduros.",
     ref:"Êx 20:7 · Jr 23:31-32 · 1Ts 5:21",
     conversa:"Como saber se foi Deus falando ou só a sua própria vontade?" },
-  { q:"Malhar e cuidar da aparência pra ficar bonito.", a:true, tag:"Pode (com equilíbrio)",
+  { q:"Malhar e cuidar da aparência pra ficar bonito.", heat:2, a:true, tag:"Pode (com equilíbrio)",
     exp:"Cuidar do corpo tem valor, e ele é templo do Espírito. Só não dá pra colocar a autoestima ali: a beleza que Deus mais valoriza é a do coração, que não envelhece.",
     ref:"1Co 6:19-20 · 1Tm 4:8 · 1Pe 3:3-4",
     conversa:"Quando o cuidado com a aparência deixa de ser saudável?" },
-  { q:"Falar \"juro por Deus\" pra convencer alguém de que é verdade.", a:false,
+  { q:"Falar \"juro por Deus\" pra convencer alguém de que é verdade.", heat:2, a:false,
     exp:"Jesus ensinou que o nosso sim deve ser sim e o nosso não, não. Se a gente precisa jurar pra ser acreditado, o problema é a confiança na nossa palavra, e o nome de Deus não é carimbo.",
     ref:"Mt 5:34-37 · Tg 5:12",
     conversa:"As pessoas acreditam na sua palavra sem você precisar jurar?" },
 
   /* ---------- Brasil raiz ---------- */
-  { q:"Ouvir música secular, que não é gospel.", a:true, tag:"Pode (com discernimento)",
+  { q:"Ouvir música secular, que não é gospel.", heat:3, a:true, tag:"Pode (com discernimento)",
     exp:"A Bíblia não divide música em gospel e secular. O que ela pede é encher a mente com o que é verdadeiro, puro e bom. Tem música \"do mundo\" linda e tem letra que só alimenta o que Deus quer tirar de você.",
     ref:"Fp 4:8 · 1Co 10:31 · Cl 3:17",
     conversa:"Tem alguma música que você ouve e sabe que te puxa pra baixo? E alguma \"secular\" que te aproxima de Deus?" },
-  { q:"Apostar na bet ou no joguinho do tigrinho, só de leve.", a:false,
+  { q:"Apostar na bet ou no joguinho do tigrinho, só de leve.", heat:3, a:false,
     exp:"A Bíblia não fala de bet, mas os princípios são claros: a aposta é desenhada pra casa ganhar, alimenta a vontade de enriquecer rápido e já destruiu muita família brasileira. Dinheiro que vem fácil, vai fácil, e quem quer ficar rico cai em armadilha.",
     ref:"1Tm 6:9-10 · Pv 13:11 · Hb 13:5",
     conversa:"E a Mega da Virada com a família? É diferente da bet ou é a mesma coisa?" },
-  { q:"Cair na folia do carnaval, no esquema \"o que acontece no bloco fica no bloco\".", a:false,
+  { q:"Cair na folia do carnaval, no esquema \"o que acontece no bloco fica no bloco\".", heat:3, a:false,
     exp:"O problema não é festa nem marchinha: Jesus foi em casamento e tinha vinho. O problema é o pacote que esse esquema vende, bebedeira e \"vale tudo\", que a Bíblia chama pelo nome. Nada fica no bloco: fica em você.",
     ref:"Gl 5:19-21 · Rm 13:13-14 · 1Pe 4:3-4",
     conversa:"Dá pra curtir o feriado e a cultura sem entrar no clima de vale-tudo? Como?" },
-  { q:"Ir numa festa à fantasia de Halloween.", a:null, tag:"Depende",
+  { q:"Ir numa festa à fantasia de Halloween.", heat:3, a:null, tag:"Depende",
     exp:"Aqui cristãos sinceros discordam. Pra uns é só fantasia e doce; pra outros é celebrar morte e ocultismo. Paulo ensina liberdade de consciência, mas manda não participar das obras das trevas e cuidar pra não fazer o irmão tropeçar. A pergunta é: o que a festa celebra e o que faz em você?",
     ref:"Ef 5:11 · 1Co 10:23-31 · Rm 14:22-23",
     conversa:"Onde fica a linha entre brincadeira cultural e mexer com o que não se deve?" },
-  { q:"Fazer uma tatuagem.", a:null, tag:"Depende",
+  { q:"Fazer uma tatuagem.", heat:3, a:null, tag:"Depende",
     exp:"Levítico proíbe marcas no corpo, num contexto de rituais pelos mortos da lei de Israel. Muitos entendem que isso não se aplica igual hoje; outros veem ali um princípio. O Novo Testamento foca no coração: por que você quer, o que vai escrever, e se honra a Deus com o seu corpo.",
     ref:"Lv 19:28 · 1Co 6:19-20 · Rm 14:5",
     conversa:"Se você fosse fazer uma tatuagem hoje, qual seria? E por quê?" },
-  { q:"Tomar uma cerveja com os amigos.", a:true, tag:"Pode (sem se embriagar)",
+  { q:"Tomar uma cerveja com os amigos.", heat:3, a:true, tag:"Pode (sem se embriagar)",
     exp:"A Bíblia não proíbe beber, e o primeiro milagre de Jesus foi transformar água em vinho. O que ela proíbe é a embriaguez. E Paulo lembra que, se a sua bebida faz um irmão tropeçar, vale abrir mão. Cada igreja tem seus costumes, e isso também merece respeito.",
     ref:"Jo 2:1-11 · Ef 5:18 · Rm 14:21",
     conversa:"Por que esse tema divide tanto as igrejas no Brasil? Onde é liberdade e onde é tropeço?" },
-  { q:"Ler o horóscopo só por diversão.", a:false,
+  { q:"Ler o horóscopo só por diversão.", heat:2, a:false,
     exp:"Deus proíbe buscar orientação nos astros e adivinhações, e Isaías ironiza quem confia nos astrólogos. \"Só por diversão\" é a porta de entrada: aos poucos, signo vira desculpa e previsão vira direção.",
     ref:"Dt 18:10-12 · Is 47:13-14 · Jr 10:2",
     conversa:"Você já se pegou explicando alguém (ou você mesmo) pelo signo?" },
-  { q:"Pular sete ondas e fazer simpatia pra ter sorte no ano novo.", a:false,
+  { q:"Pular sete ondas e fazer simpatia pra ter sorte no ano novo.", heat:3, a:false,
     exp:"Simpatia é tentar garantir o futuro com ritual, e o futuro está nas mãos de Deus, não da sorte. Usar branco ou comer lentilha não é o problema; o problema é colocar a confiança no rito em vez de em Deus.",
     ref:"Pv 16:33 · Mt 6:31-33 · Dt 18:10",
     conversa:"Que \"superstições de família\" a gente repete sem nem pensar?" },
-  { q:"Ir na festa junina da escola ou do bairro.", a:null, tag:"Depende",
+  { q:"Ir na festa junina da escola ou do bairro.", heat:3, a:null, tag:"Depende",
     exp:"A festa junina nasceu homenageando santos católicos, e muita igreja prefere fazer a \"festa julina\". Paulo diz que comer não aproxima nem afasta de Deus e que cada um deve estar convicto na própria consciência, cuidando pra não ferir a do irmão. Quentão, quadrilha e paçoca não salvam nem condenam ninguém.",
     ref:"1Co 8:8-9 · 1Co 10:25-31 · Rm 14:5-6",
     conversa:"Quando uma tradição cultural vira problema pra fé? Dá pra ressignificar?" },
-  { q:"Namorar alguém que não é cristão.", a:false,
+  { q:"Namorar alguém que não é cristão.", heat:3, a:false,
     exp:"A Bíblia pede pra não se colocar em jugo desigual: é como dois bois puxando pra lados diferentes. Amizade com quem não crê é ótimo; dividir a vida inteira com quem não tem a mesma direção é outra coisa.",
     ref:"2Co 6:14 · 1Co 7:39 · Am 3:3",
     conversa:"E se a pessoa for incrível, melhor que muito crente? O que você diria pra um amigo nessa?" },
-  { q:"Morar junto antes de casar, pra \"testar\" a relação.", a:false,
+  { q:"Morar junto antes de casar, pra \"testar\" a relação.", heat:3, a:false,
     exp:"A Bíblia guarda o sexo e a vida a dois pro casamento, uma aliança assumida diante de Deus e das pessoas. Casamento não é período de teste: é compromisso. Isso não diminui quem já está nessa situação: a graça sempre abre caminho de volta.",
     ref:"Hb 13:4 · 1Co 6:18-20 · 1Ts 4:3-4",
     conversa:"Por que a cultura diz que é mais sábio testar antes? O que a gente responde com amor?" },
-  { q:"Comemorar o Natal mesmo sabendo que Jesus não nasceu em 25 de dezembro.", a:true,
+  { q:"Comemorar o Natal mesmo sabendo que Jesus não nasceu em 25 de dezembro.", heat:2, a:true,
     exp:"A data não está na Bíblia, mas celebrar o nascimento de Jesus está: os anjos fizeram festa. Paulo deixa livre quem separa um dia pro Senhor. O desafio é Jesus não sumir no meio do Papai Noel e das compras.",
     ref:"Lc 2:10-14 · Rm 14:5-6",
     conversa:"O que a sua família poderia fazer pra Jesus ser o centro do Natal de verdade?" },
-  { q:"Dar um \"cafezinho\" pro guarda pra escapar da multa.", a:false,
+  { q:"Dar um \"cafezinho\" pro guarda pra escapar da multa.", heat:2, a:false,
     exp:"Propina é suborno, por menor que seja, e a Bíblia diz que suborno cega e perverte a justiça. O famoso jeitinho brasileiro não ganha desconto no Reino de Deus.",
     ref:"Êx 23:8 · Pv 17:23 · Rm 13:1-2",
     conversa:"Em que outras situações o \"jeitinho\" aparece no nosso dia a dia sem a gente perceber?" },
-  { q:"Usar carteirinha de estudante emprestada pra pagar meia-entrada.", a:false,
+  { q:"Usar carteirinha de estudante emprestada pra pagar meia-entrada.", heat:2, a:false,
     exp:"É se passar por outra pessoa pra pagar menos. Mesmo que o ingresso seja caro e todo mundo faça, continua sendo mentira e levar vantagem indevida. Quem é fiel no pouco é fiel no muito.",
     ref:"Pv 11:1 · Lc 16:10 · Ef 4:25",
     conversa:"Qual o \"pequeno golpe\" mais aceito no Brasil? Por que a gente normaliza?" },
 
   /* ---------- Eleição (sem partido: o foco é a postura do cristão) ---------- */
-  { q:"Compartilhar no grupo da família uma notícia que favorece seu candidato, sem conferir se é verdade.", a:false,
+  { q:"Compartilhar no grupo da família uma notícia que favorece seu candidato, sem conferir se é verdade.", heat:2, a:false,
     exp:"Espalhar boato é falso testemunho, mesmo quando é \"a favor do lado certo\". A Bíblia manda não espalhar notícia falsa e ouvir os dois lados antes de concluir. Mentira a serviço de uma causa boa continua sendo mentira.",
     ref:"Êx 23:1 · Pv 18:17 · Ef 4:25",
     conversa:"Você já repassou algo que depois descobriu ser falso? O que fez depois?" },
-  { q:"Xingar e humilhar quem vota diferente de você nas redes.", a:false,
+  { q:"Xingar e humilhar quem vota diferente de você nas redes.", heat:2, a:false,
     exp:"Paulo pede pra não difamar ninguém e tratar todos com mansidão. Dá pra discordar com firmeza sem desumanizar. Quem lê seus comentários deveria reconhecer Jesus neles.",
     ref:"Tt 3:1-2 · Ef 4:29-31 · 1Pe 3:15-16",
     conversa:"Se alguém lesse só os seus comentários sobre política, saberia que você é cristão?" },
-  { q:"Cortar relação com um parente porque ele vota no outro lado.", a:false,
+  { q:"Cortar relação com um parente porque ele vota no outro lado.", heat:3, a:false,
     exp:"No que depender de você, viva em paz com todos. Política passa a cada quatro anos; família e o testemunho de amor ficam. Dá pra colocar limite em brigas sem cortar a pessoa da sua vida.",
     ref:"Rm 12:18 · Mt 5:9 · Ef 4:3",
     conversa:"Como manter o almoço de domingo em paz em ano de eleição?" },
-  { q:"Achar que um político vai salvar o Brasil.", a:false,
+  { q:"Achar que um político vai salvar o Brasil.", heat:2, a:false,
     exp:"Os salmos avisam pra não confiar em príncipes nem em ninguém que não pode salvar. Votar com responsabilidade é importante, mas esperança no lugar errado vira idolatria, venha de que lado vier.",
     ref:"Sl 146:3-5 · Sl 20:7 · Jr 17:5-7",
     conversa:"Como saber se a política já ocupou um espaço no coração que é de Deus?" },
-  { q:"Dizer que cristão de verdade só pode votar em um lado.", a:false,
+  { q:"Dizer que cristão de verdade só pode votar em um lado.", heat:3, a:false,
     exp:"Os princípios bíblicos não mudam, mas cristãos sinceros pesam esses princípios de jeitos diferentes na hora de votar. Julgar a fé do irmão pelo voto é tomar o lugar de Deus. A nossa cidadania principal está no céu.",
     ref:"Rm 14:4,10 · Fp 3:20 · Gl 3:28",
     conversa:"O que une a gente aqui na célula que é maior do que qualquer eleição?" },
-  { q:"Votar em quem o pastor indicou, sem pesquisar nada.", a:false, tag:"Não pode (sem pensar)",
+  { q:"Votar em quem o pastor indicou, sem pesquisar nada.", heat:3, a:false, tag:"Não pode (sem pensar)",
     exp:"Ouvir conselho de líderes é saudável, mas cada um vai prestar contas a Deus por si. Os bereanos conferiam até o que Paulo dizia. Voto é decisão de consciência: pesquisa, ora e decide.",
     ref:"Rm 14:12 · At 17:11 · 1Ts 5:21",
     conversa:"Qual o papel da igreja na política? Onde ajuda e onde passa do ponto?" },
-  { q:"Lutar contra a injustiça e querer mudar o sistema.", a:true, tag:"Pode (e deve)",
+  { q:"Lutar contra a injustiça e querer mudar o sistema.", heat:3, a:true, tag:"Pode (e deve)",
     exp:"Os profetas denunciaram rei, juiz e rico que oprimia pobre. Deus pede justiça correndo como um rio. Ser cristão não é ser conformado: é buscar o bem da cidade, defender quem não tem voz e fazer isso do jeito de Jesus.",
     ref:"Mq 6:8 · Am 5:24 · Is 1:17 · Jr 29:7",
     conversa:"Que injustiça perto de você a célula poderia ajudar a enfrentar de verdade?" },
-  { q:"Apoiar uma revolução violenta pra derrubar um governo injusto.", a:false,
+  { q:"Apoiar uma revolução violenta pra derrubar um governo injusto.", heat:3, a:false,
     exp:"Jesus mandou Pedro guardar a espada e disse que o Reino dEle não avança na força. Paulo manda vencer o mal com o bem. Resistir ao erro e até desobedecer quando a ordem é contra Deus é uma coisa; pegar em armas por uma causa é outra.",
     ref:"Mt 26:52 · Jo 18:36 · Rm 12:17-21",
     conversa:"Na história, cristãos já enfrentaram tiranos. Qual a diferença entre resistir e revidar?" },
-  { q:"Anular o voto ou nem ir votar.", a:null, tag:"Depende",
+  { q:"Anular o voto ou nem ir votar.", heat:3, a:null, tag:"Depende",
     exp:"Deus mandou o povo buscar o bem da cidade onde vivia, e o voto é uma ferramenta pra isso. Mas há quem anule por convicção, depois de pesquisar e orar, e isso é diferente de não votar por preguiça ou desânimo. A pergunta é: você está fugindo ou decidindo?",
     ref:"Jr 29:7 · Pv 29:2 · Rm 13:1",
     conversa:"Política te dá esperança ou desânimo? Como a fé muda isso?" },
-  { q:"Trocar o voto por uma cesta básica ou um favor.", a:false,
+  { q:"Trocar o voto por uma cesta básica ou um favor.", heat:1, a:false,
     exp:"Vender o voto é aceitar suborno, e quem faz isso entrega o futuro da cidade por pouco. A Bíblia diz que quem odeia suborno vive. Cristão vota pensando no bem de todos, não no próprio bolso.",
     ref:"Êx 23:8 · Pv 15:27 · Fp 2:4",
     conversa:"E prometer voto em troca de uma vaga de emprego, é a mesma coisa?" },
-  { q:"Orar por um governante que você não suporta.", a:true, tag:"Pode (e deve)",
+  { q:"Orar por um governante que você não suporta.", heat:1, a:true, tag:"Pode (e deve)",
     exp:"Paulo pediu oração por todos os que estão no poder, numa época de imperadores que perseguiam cristãos. Orar não é concordar: é pedir que Deus dê sabedoria e que a gente viva em paz.",
     ref:"1Tm 2:1-2 · Mt 5:44 · Jr 29:7",
     conversa:"Bora fazer isso agora? Quem a célula pode colocar em oração hoje?" },
@@ -740,6 +742,7 @@ const H = {
   votes: new Map(),      // peerId -> boolean
   reveal: null,
   size: 20,              // cartas por rodada (líder escolhe no lobby)
+  used: new Set(),       // índices de cartas já reveladas nesta sala
   timer: null, openTimer: null,
 };
 function sizeOptions() {
@@ -866,9 +869,49 @@ function hostTick() {
   }
 }
 
+/* ---------- sorteio das cartas ----------
+   Cada carta tem heat (1 a 3): as mais polêmicas saem com mais frequência,
+   mas ainda é sorteio. Cartas já jogadas nesta sala só voltam quando acabarem
+   as inéditas, e as jogadas nos últimos encontros (salvas no aparelho do líder)
+   ficam com peso bem menor. */
+const HEAT_WEIGHT = { 1: 1, 2: 2.5, 3: 6 };
+const RECENT_KEY = "pon-recentes";
+const RECENT_KEEP = 45;      // quantas cartas jogadas lembrar entre encontros
+const RECENT_PENALTY = 0.12; // peso multiplicado pra carta jogada recentemente
+
+function recentPlayed() {
+  try { const v = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"); return Array.isArray(v) ? v : []; }
+  catch (e) { return []; }
+}
+function rememberPlayed(q) {
+  const list = recentPlayed().filter((x) => x !== q);
+  list.push(q);
+  store(RECENT_KEY, JSON.stringify(list.slice(-RECENT_KEEP)));
+}
+function pickCards(size) {
+  const recent = new Set(recentPlayed());
+  const scored = DECK.map((c, k) => {
+    let w = HEAT_WEIGHT[c.heat] || HEAT_WEIGHT[2];
+    if (recent.has(c.q)) w *= RECENT_PENALTY;
+    let key = Math.pow(Math.random(), 1 / w);   // sorteio ponderado sem reposição
+    if (H.used.has(k)) key -= 1;                 // repetidas da sala só no fim da fila
+    return { k, key };
+  });
+  scored.sort((a, b) => b.key - a.key);
+  const chosen = scored.slice(0, Math.min(size, DECK.length)).map((x) => x.k);
+  return shuffle(chosen.length).map((j) => chosen[j]);
+}
+
+function hostToLobby() {
+  H.phase = "lobby";
+  H.votes.clear(); H.reveal = null;
+  hostBroadcast();
+}
+
 function hostStart() {
   if (H.players.length < 2) return;
-  H.order = shuffle(DECK.length).slice(0, Math.min(H.size, DECK.length));
+  if (H.used.size >= DECK.length) H.used.clear();
+  H.order = pickCards(H.size);
   H.i = 0; H.r++;
   H.votes.clear(); H.reveal = null;
   H.phase = "vote";
@@ -884,6 +927,8 @@ function hostReveal() {
   }
   H.reveal = { a: card.a === null ? null : !!card.a, exp: card.exp, ref: card.ref, conversa: card.conversa, pode, nao };
   if (card.tag) H.reveal.tag = card.tag;
+  H.used.add(H.order[H.i]);
+  rememberPlayed(card.q);
   H.phase = "reveal";
   hostBroadcast();
 }
@@ -982,7 +1027,7 @@ function teardown() {
   const pp = P.peer, hp = H.peer;
   P.peer = null; P.conn = null; P.joined = false;
   H.peer = null; H.opened = false; H.tries = 0;
-  H.conns.clear(); H.lastSeen.clear(); H.players = []; H.votes.clear(); H.reveal = null; H.phase = "lobby";
+  H.conns.clear(); H.lastSeen.clear(); H.players = []; H.votes.clear(); H.used.clear(); H.reveal = null; H.phase = "lobby";
   try { pp && pp.destroy(); } catch (e) {}
   try { hp && hp.destroy(); } catch (e) {}
   if (wakeLock) { try { wakeLock.release(); } catch (e) {} }
@@ -1287,6 +1332,7 @@ const BUILD = {
           </div>
         </section>
         <div class="row-between" style="margin-top:24px"><span class="label">CARTAS NA RODADA</span><span class="muted">${DECK.length} no baralho</span></div>
+        <p class="hint" style="text-align:left;margin-top:6px;font-size:13px">As mais polêmicas aparecem mais, e as que já saíram nos últimos encontros ficam pro fim da fila.</p>
         <div class="seg" style="grid-template-columns:repeat(${sizeOptions().length},minmax(0,1fr))" role="group" aria-label="Quantas cartas nesta rodada">
           ${sizeOptions().map((n) => `<button type="button" data-act="size" data-n="${n}" aria-pressed="false">${n === DECK.length ? "TODAS" : n}</button>`).join("")}
         </div>
@@ -1413,6 +1459,7 @@ const BUILD = {
       <div class="end-actions">
         ${ui.isHost
           ? `<button class="btn btn-dark" type="button" data-act="again" id="again">${I.reload}JOGAR DE NOVO</button>
+             <button class="btn btn-sec" type="button" data-act="lobby">VOLTAR PRA SALA</button>
              <p class="hint" id="againHint">Reembaralha e mantém a mesma galera.</p>`
           : `<p class="hint">Se o líder quiser, ele começa outra rodada daqui.</p>`}
       </div>
@@ -1486,7 +1533,9 @@ const UPDATE = {
     if (ui.isHost) {
       const ok = s.players.length >= 2;
       $("#again").disabled = !ok;
-      $("#againHint").textContent = ok ? "Reembaralha e mantém a mesma galera." : "Precisa de pelo menos 2 pessoas na mesa.";
+      $("#againHint").textContent = ok
+        ? `Jogar de novo traz ${plural(H.size, "carta nova", "cartas novas")} com a mesma galera. Na sala você muda a quantidade.`
+        : "Precisa de pelo menos 2 pessoas na mesa.";
     }
   },
 };
@@ -1503,6 +1552,7 @@ app.addEventListener("click", (e) => {
   else if (act === "reveal" && ui.isHost) hostReveal();
   else if (act === "next" && ui.isHost) hostNext();
   else if (act === "again" && ui.isHost) hostStart();
+  else if (act === "lobby" && ui.isHost) hostToLobby();
 });
 
 render();

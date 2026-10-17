@@ -20,8 +20,10 @@ O celular do líder precisa ficar com a tela aberta: se ele fechar, a sala cai.
 As cartas ficam no array `DECK`, no topo do `<script>` do `index.html`:
 
 ```js
-{ q:"Situação", a:true, tag:"Pode (e deve)", exp:"Explicação", ref:"Ef 4:26-27 · Mt 5:9", conversa:"Pergunta pra conversar" }
+{ q:"Situação", heat:3, a:true, tag:"Pode (e deve)", exp:"Explicação", ref:"Ef 4:26-27 · Mt 5:9", conversa:"Pergunta pra conversar" }
 ```
+
+- `heat` é o quanto a carta racha a roda: `3` = muito polêmica (sai bem mais vezes), `2` = média, `1` = mais tranquila. O sorteio favorece as polêmicas, não repete cartas na mesma sala até acabarem as inéditas e deixa pro fim da fila as que saíram nos últimos encontros (lembradas no celular do líder).
 
 - `a: true` = PODE (verde), `a: false` = NÃO PODE (vermelho), `a: null` = DEPENDE (amarelo, pra temas em que cristãos sinceros divergem).
 - `tag` é opcional e substitui o texto da faixa.
